@@ -1,19 +1,18 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
 
 :root {
-  --bg-color: #03080f; 
-  --container-bg: #0c1c2362; 
-  --primary-color: #193a4980; 
-  --primary-hover: #193a49; 
-  --text-color: #ffffff8f; 
-  --text-muted:rgb(28, 73, 85); 
-  --border-color: #40444b; 
-  --input-bg: #03080f; 
-  --success-color: #5e636d; 
-  --error-color: #5e636d; 
-  --slider-track: #4f545c;
-  --slider-thumb: rgba(81, 150, 121, 0.411); 
-  --slider-hover: 
+  --bg-color: #1a1b1f;
+  --container-bg: #2c2e36;
+  --primary-color: #ff7c00;
+  --primary-hover: #ff9333;
+  --text-color: #f2f2f2;
+  --text-muted: #848484;
+  --border-color: #44474f;
+  --input-bg: #2f3037;
+  --success-color: #6bff6b;
+  --error-color: #ff4f58;
+  --slider-track: #3b3d45;
+  --slider-thumb: #ff7c00;
 }
 
 * {
@@ -37,7 +36,7 @@ body {
   background-color: var(--container-bg);
   padding: 30px 40px;
   border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
   width: 100%;
   max-width: 500px;
   text-align: center;
@@ -47,13 +46,14 @@ h1 {
   color: var(--primary-hover);
   margin-bottom: 25px;
   font-weight: 600;
+  text-shadow: 0 0 5px var(--primary-color);
 }
 
 .password-display-container {
   display: flex;
   align-items: center;
-  margin-bottom: 10px; 
-  position: relative; 
+  margin-bottom: 10px;
+  position: relative;
 }
 
 #passwordDisplay {
@@ -62,10 +62,10 @@ h1 {
   font-size: 1.1rem;
   border: 1px solid var(--border-color);
   background-color: var(--input-bg);
-  color: var(--text-muted);
-  border-radius: 6px 0 0 6px; 
+  color: var(--text-color);
+  border-radius: 6px 0 0 6px;
   outline: none;
-  font-family: "Courier New", Courier, monospace; 
+  font-family: "Courier New", Courier, monospace;
 }
 
 #passwordDisplay::placeholder {
@@ -75,30 +75,23 @@ h1 {
 #copyButton {
   padding: 12px 15px;
   background-color: var(--primary-color);
-  color: var(--input-bg);
+  color: var(--bg-color);
   border: none;
   border-left: 1px solid var(--bg-color);
-  border-radius: 0 6px 6px 0; 
+  border-radius: 0 6px 6px 0;
   cursor: pointer;
   font-size: 1.1rem;
-  transition: background-color 0.2s ease;
-  outline: none;
+  transition: background-color 0.3s ease;
 }
 
 #copyButton:hover {
   background-color: var(--primary-hover);
 }
 
-#copyButton i {
-  display: block; 
-}
-
 .copy-message {
   color: var(--success-color);
   font-size: 0.9em;
-  height: 1.2em; 
-  line-height: 1.2em;
-  margin-bottom: 15px; 
+  margin-bottom: 15px;
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -114,7 +107,6 @@ h1 {
   border-radius: 4px;
   margin-top: 10px;
   overflow: hidden;
-  position: relative;
 }
 
 .strength-meter-bar {
@@ -141,7 +133,7 @@ h1 {
 .option {
   margin-bottom: 20px;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
 }
 
 .option label {
@@ -151,19 +143,22 @@ h1 {
 }
 
 .option.checkbox-option {
-  flex-direction: row; 
+  flex-direction: row;
   align-items: center;
   margin-bottom: 15px;
 }
 
 .option.checkbox-option label {
-  margin-bottom: 0; 
   margin-left: 10px;
-  color: var(--text-color); 
+  color: var(--text-color);
   cursor: pointer;
+  transition: color 0.3s ease;
 }
 
-/* Style range slider */
+.option.checkbox-option label:hover {
+  color: var(--primary-hover);
+}
+
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -192,26 +187,18 @@ input[type="range"]::-moz-range-thumb {
   background: var(--slider-thumb);
   border-radius: 50%;
   cursor: pointer;
-  border: none; 
+  border: none;
   transition: background-color 0.2s ease;
 }
 
-input[type="range"]:hover::-webkit-slider-thumb {
-    width: 7px;
-    height: 20px;
-  background: var(--primary-hover)
-}
-
+input[type="range"]:hover::-webkit-slider-thumb,
 input[type="range"]:hover::-moz-range-thumb {
-    width: 7px;
-    height: 20px;
+  width: 7px;
   background: var(--primary-hover);
 }
 
-/* Style checkboxes */
 input[type="checkbox"] {
   appearance: none;
-  -webkit-appearance: none;
   background-color: var(--input-bg);
   border: 1px solid var(--border-color);
   width: 20px;
@@ -219,8 +206,8 @@ input[type="checkbox"] {
   border-radius: 4px;
   cursor: pointer;
   position: relative;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-  flex-shrink: 0; 
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
 }
 
 input[type="checkbox"]:checked {
@@ -229,8 +216,8 @@ input[type="checkbox"]:checked {
 }
 
 input[type="checkbox"]:checked::after {
-  content: "\f00c"; 
-  font-family: "Font Awesome 5 Free", "Font Awesome 6 Free"; /* Ensure compatibility */
+  content: "\f00c";
+  font-family: "Font Awesome 6 Free";
   font-weight: 900;
   color: white;
   font-size: 12px;
@@ -238,66 +225,40 @@ input[type="checkbox"]:checked::after {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  display: block
+}
+
+#error-message {
+  color: var(--error-color);
+  font-size: 0.9em;
+  margin-top: 15px;
 }
 
 #generateButton {
   background-color: var(--primary-color);
-  color: var(--error-color);
+  color: #1a1b1f;
   border: 1px solid var(--border-color);
-  padding: 15px 0; 
+  padding: 15px 0;
   border-radius: 6px;
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
   width: 100%;
   transition: background-color 0.2s ease, transform 0.1s ease;
-  margin-top: 10px; 
 }
 
 #generateButton:hover {
   background-color: var(--primary-hover);
+  box-shadow: 0 0 8px var(--primary-hover);
 }
 
 #generateButton:active {
   transform: scale(0.98);
 }
 
-.error-message {
-  color: var(--error-color);
-  font-size: 0.9em;
-  height: 1.2em; 
-  line-height: 1.2em;
-  margin-top: 15px; 
-}
-
-/* Responsive adjustments */
 @media (max-width: 480px) {
   .container {
     padding: 20px;
   }
-
-  h1 {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-  }
-
-  #passwordDisplay {
-    font-size: 1rem;
-    padding: 10px 12px;
-  }
-
-  #copyButton {
-    padding: 10px 12px;
-    font-size: 1rem;
-  }
-
-  .option label {
-    font-size: 0.9rem;
-  }
-
-  #generateButton {
-    padding: 12px 0;
-    font-size: 1rem;
-  }
 }
+
+
