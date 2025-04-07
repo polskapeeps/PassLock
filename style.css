@@ -1,0 +1,303 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
+
+:root {
+  --bg-color: #03080f; 
+  --container-bg: #0c1c2362; 
+  --primary-color: #193a4980; 
+  --primary-hover: #193a49; 
+  --text-color: #5e636d; 
+  --text-muted: #5e636d85; 
+  --border-color: #40444b; 
+  --input-bg: #03080f; 
+  --success-color: #5e636d; 
+  --error-color: #5e636d; 
+  --slider-track: #4f545c;
+  --slider-thumb: #193a4980; 
+  --slider-hover: 
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container {
+  background-color: var(--container-bg);
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+}
+
+h1 {
+  color: var(--primary-hover);
+  margin-bottom: 25px;
+  font-weight: 600;
+}
+
+.password-display-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px; 
+  position: relative; 
+}
+
+#passwordDisplay {
+  flex-grow: 1;
+  padding: 12px 15px;
+  font-size: 1.1rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  color: var(--text-muted);
+  border-radius: 6px 0 0 6px; 
+  outline: none;
+  font-family: "Courier New", Courier, monospace; 
+}
+
+#passwordDisplay::placeholder {
+  color: var(--text-muted);
+}
+
+#copyButton {
+  padding: 12px 15px;
+  background-color: var(--primary-color);
+  color: var(--input-bg);
+  border: none;
+  border-left: 1px solid var(--bg-color);
+  border-radius: 0 6px 6px 0; 
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background-color 0.2s ease;
+  outline: none;
+}
+
+#copyButton:hover {
+  background-color: var(--primary-hover);
+}
+
+#copyButton i {
+  display: block; 
+}
+
+.copy-message {
+  color: var(--success-color);
+  font-size: 0.9em;
+  height: 1.2em; 
+  line-height: 1.2em;
+  margin-bottom: 15px; 
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.copy-message.show {
+  opacity: 1;
+}
+
+.strength-meter {
+  height: 8px;
+  width: 100%;
+  background-color: var(--text-muted);
+  border-radius: 4px;
+  margin-top: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.strength-meter-bar {
+  height: 100%;
+  width: 0;
+  background-color: var(--primary-hover);
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: left;
+  margin-top: 5px;
+  height: 1em;
+}
+
+.options {
+  margin-top: 25px;
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.option {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column; 
+}
+
+.option label {
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.option.checkbox-option {
+  flex-direction: row; 
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.option.checkbox-option label {
+  margin-bottom: 0; 
+  margin-left: 10px;
+  color: var(--text-color); 
+  cursor: pointer;
+}
+
+/* Style range slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  background: var(--slider-track);
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 5px;
+  height: 20px;
+  background: var(--slider-thumb);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 5px;
+  height: 20px;
+  background: var(--slider-thumb);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none; 
+  transition: background-color 0.2s ease;
+}
+
+input[type="range"]:hover::-webkit-slider-thumb {
+    width: 7px;
+    height: 20px;
+  background: var(--primary-hover)
+}
+
+input[type="range"]:hover::-moz-range-thumb {
+    width: 7px;
+    height: 20px;
+  background: var(--primary-hover);
+}
+
+/* Style checkboxes */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  flex-shrink: 0; 
+}
+
+input[type="checkbox"]:checked {
+  background-color: var(--primary-color);
+  border-color: var(--border-color);
+}
+
+input[type="checkbox"]:checked::after {
+  content: "\f00c"; 
+  font-family: "Font Awesome 5 Free", "Font Awesome 6 Free"; /* Ensure compatibility */
+  font-weight: 900;
+  color: white;
+  font-size: 12px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: block
+}
+
+#generateButton {
+  background-color: var(--primary-color);
+  color: var(--error-color);
+  border: 1px solid var(--border-color);
+  padding: 15px 0; 
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  margin-top: 10px; 
+}
+
+#generateButton:hover {
+  background-color: var(--primary-hover);
+}
+
+#generateButton:active {
+  transform: scale(0.98);
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 0.9em;
+  height: 1.2em; 
+  line-height: 1.2em;
+  margin-top: 15px; 
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .container {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+
+  #passwordDisplay {
+    font-size: 1rem;
+    padding: 10px 12px;
+  }
+
+  #copyButton {
+    padding: 10px 12px;
+    font-size: 1rem;
+  }
+
+  .option label {
+    font-size: 0.9rem;
+  }
+
+  #generateButton {
+    padding: 12px 0;
+    font-size: 1rem;
+  }
+}
