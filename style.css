@@ -5,14 +5,14 @@
   --container-bg: #0c1c2362; 
   --primary-color: #193a4980; 
   --primary-hover: #193a49; 
-  --text-color: #5e636d; 
-  --text-muted: #5e636d85; 
+  --text-color: #ffffff8f; 
+  --text-muted:rgb(81, 150, 121); 
   --border-color: #40444b; 
   --input-bg: #03080f; 
   --success-color: #5e636d; 
   --error-color: #5e636d; 
   --slider-track: #4f545c;
-  --slider-thumb: #193a4980; 
+  --slider-thumb: #193a49; 
   --slider-hover: 
 }
 
