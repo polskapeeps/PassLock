@@ -4,8 +4,8 @@ const path = require('path')
 // Function to create the main application window
 function createWindow() {
   const mainWindow = new BrowserWindow({
-    width: 600,
-    height: 800,
+    width: 400,
+    height: 600,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -17,7 +17,7 @@ function createWindow() {
   mainWindow.loadFile('index.html')
   
   // Uncomment to open DevTools automatically (helpful for debugging)
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 }
 
 // Create window when Electron is ready
