@@ -1,34 +1,36 @@
-const { app, BrowserWindow } = require('electron');
-const path = require('path');
+const { app, BrowserWindow } = require('electron')
+const path = require('path')
 
+// Function to create the main application window
 function createWindow() {
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 600,
+    height: 800,
     webPreferences: {
-      // If you're loading local HTML/JS, you can enable nodeIntegration
-      // or other features here. But be mindful of potential security issues.
-      nodeIntegration: true
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, 'preload.js')
     }
-  });
+  })
 
-  // Load your HTML file
-  mainWindow.loadFile(path.join(__dirname, 'index.html'));
-
-  // Uncomment to open the DevTools automatically
-  // mainWindow.webContents.openDevTools();
+  // Load your existing index.html file
+  mainWindow.loadFile('index.html')
+  
+  // Uncomment to open DevTools automatically (helpful for debugging)
+  // mainWindow.webContents.openDevTools()
 }
 
-// Called when Electron has finished initialization
+// Create window when Electron is ready
 app.whenReady().then(() => {
-  createWindow();
-
+  createWindow()
+  
+  // On macOS, recreate window when dock icon is clicked
   app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
-  });
-});
+    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  })
+})
 
-// Quit when all windows are closed.
+// Quit the app when all windows are closed (except on macOS)
 app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit();
-});
+  if (process.platform !== 'darwin') app.quit()
+})
