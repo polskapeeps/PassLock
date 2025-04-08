@@ -159,6 +159,28 @@ h1 {
   color: var(--primary-hover);
 }
 
+
+.option-description {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  border-radius: 6px;
+  margin-top: 4px;
+  font-family: "Courier New", Courier, monospace;
+}
+
+input[type="text"]::placeholder {
+  color: var(--text-muted);
+}
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
