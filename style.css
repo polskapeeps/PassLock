@@ -29,30 +29,30 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: 20px;
+  padding: 10px;
 }
 
 .container {
   background-color: var(--container-bg);
-  padding: 30px 40px;
+  padding: 30px 10px;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
   width: 100%;
-  max-width: 500px;
+  max-width: 350px;
   text-align: center;
 }
 
 h1 {
   color: var(--primary-hover);
-  margin-bottom: 25px;
-  font-weight: 600;
-  text-shadow: 0 0 5px var(--primary-color);
+  margin-bottom: 20px;
+  font-weight: 900;
+  text-shadow: 0 0 1px var(--primary-color);
 }
 
 .password-display-container {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 1px;
   position: relative;
 }
 
@@ -105,7 +105,7 @@ h1 {
   width: 100%;
   background-color: var(--text-muted);
   border-radius: 4px;
-  margin-top: 10px;
+  margin-top: 1px;
   overflow: hidden;
 }
 
@@ -138,14 +138,14 @@ h1 {
 
 .option label {
   color: var(--text-muted);
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   font-size: 0.95rem;
 }
 
 .option.checkbox-option {
   flex-direction: row;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
 }
 
 .option.checkbox-option label {
