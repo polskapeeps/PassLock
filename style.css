@@ -228,7 +228,7 @@ input[type="checkbox"] {
   border: 1px solid var(--border-color);
   width: 20px;
   height: 20px;
-  border-radius: 4px;
+  border-radius: 60px;
   cursor: pointer;
   position: relative;
   transition: background-color 0.2s ease;
@@ -263,7 +263,7 @@ input[type="checkbox"]:checked::after {
   color: #1a1b1f;
   border: 1px solid var(--border-color);
   padding: 15px 0;
-  border-radius: 6px;
+  border-radius: 60px;
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
