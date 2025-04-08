@@ -39,14 +39,15 @@
           <label for="lengthSlider"
             >Password Length: <span id="lengthValue">12</span></label
           >
-          <input type="range" id="lengthSlider" min="4" max="36" value="" />
+          <input type="range" id="lengthSlider" min="4" max="36" value="12" />
         </div>
-        <!-- 
-          <div class="option">
-          <label for="excludeChars">Exclusions:</label>
+        
+        <!-- New options added below -->
+        <div class="option">
+          <label for="excludeChars">Exclude Characters:</label>
           <input type="text" id="excludeChars" placeholder="e.g. 0O1Il|" />
-          <small>Characters that might be confusing or not allowed by some sites</small>
-        </div> 
+          <small class="option-description">Characters that might be confusing or not allowed by some sites</small>
+        </div>
 
         <div class="option checkbox-option">
           <input type="checkbox" id="avoidAmbiguous" />
@@ -56,7 +57,8 @@
         <div class="option checkbox-option">
           <input type="checkbox" id="requireAllTypes" />
           <label for="requireAllTypes">Require All Selected Character Types</label>
-        </div>   -->     
+        </div>
+        <!-- End of new options -->
 
         <div class="option checkbox-option">
           <input type="checkbox" id="includeUppercase" checked />

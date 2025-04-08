@@ -7,6 +7,9 @@ const includeUppercase = document.getElementById("includeUppercase");
 const includeLowercase = document.getElementById("includeLowercase");
 const includeNumbers = document.getElementById("includeNumbers");
 const includeSymbols = document.getElementById("includeSymbols");
+const excludeChars = document.getElementById("excludeChars");
+const avoidAmbiguous = document.getElementById("avoidAmbiguous");
+const requireAllTypes = document.getElementById("requireAllTypes");
 const generateButton = document.getElementById("generateButton");
 const copyMessage = document.getElementById("copyMessage");
 const errorMessage = document.getElementById("error-message");
@@ -99,37 +102,113 @@ function updatePasswordStrength(password) {
   } 
 }
 
-// --- Core Logic Functions To Generate  ---
+// --- Enhanced Password Generation ---
 function generatePassword() {
   const length = parseInt(lengthSlider.value);
-
+  
+  // Get character set options
   const uppercase = includeUppercase.checked;
   const lowercase = includeLowercase.checked;
   const numbers = includeNumbers.checked;
   const symbols = includeSymbols.checked;
-
+  
+  // Get exclusion options
+  const excludedChars = excludeChars.value;
+  const shouldAvoidAmbiguous = avoidAmbiguous.checked;
+  const shouldRequireAllTypes = requireAllTypes.checked;
+  
+  // Define ambiguous characters that can be confusing
+  const ambiguousChars = "0O1Il|";
+  
+  // Prepare character sets
   let allowedChars = "";
-  if (uppercase) allowedChars += uppercaseChars;
-  if (lowercase) allowedChars += lowercaseChars;
-  if (numbers) allowedChars += numberChars;
-  if (symbols) allowedChars += symbolChars;
-
+  let uppercaseSet = uppercaseChars;
+  let lowercaseSet = lowercaseChars;
+  let numberSet = numberChars;
+  let symbolSet = symbolChars;
+  
+  // Remove excluded characters from each set
+  if (excludedChars || shouldAvoidAmbiguous) {
+    const exclusions = shouldAvoidAmbiguous 
+      ? excludedChars + ambiguousChars 
+      : excludedChars;
+      
+    for (const char of exclusions) {
+      uppercaseSet = uppercaseSet.replace(char, "");
+      lowercaseSet = lowercaseSet.replace(char, "");
+      numberSet = numberSet.replace(char, "");
+      symbolSet = symbolSet.replace(char, "");
+    }
+  }
+  
+  // Add selected character sets to allowed characters
+  if (uppercase) allowedChars += uppercaseSet;
+  if (lowercase) allowedChars += lowercaseSet;
+  if (numbers) allowedChars += numberSet;
+  if (symbols) allowedChars += symbolSet;
+  
+  // Validate character set selection
   if (!allowedChars) {
     errorMessage.textContent = "Please select at least one character type.";
     return;
   } else {
     errorMessage.textContent = ""; // Clear any previous error message
   }
-
+  
+  // Generate the password
   let password = "";
-  for (let i = 0; i < length; i++) {
-    password += getSecureRandomChar(allowedChars);
+  
+  if (shouldRequireAllTypes) {
+    // Ensure at least one character from each selected type
+    const requiredChars = [];
+    
+    if (uppercase && uppercaseSet.length > 0) 
+      requiredChars.push(getSecureRandomChar(uppercaseSet));
+      
+    if (lowercase && lowercaseSet.length > 0) 
+      requiredChars.push(getSecureRandomChar(lowercaseSet));
+      
+    if (numbers && numberSet.length > 0) 
+      requiredChars.push(getSecureRandomChar(numberSet));
+      
+    if (symbols && symbolSet.length > 0) 
+      requiredChars.push(getSecureRandomChar(symbolSet));
+    
+    // Add required characters
+    password = requiredChars.join('');
+    
+    // Fill the rest randomly
+    for (let i = password.length; i < length; i++) {
+      password += getSecureRandomChar(allowedChars);
+    }
+    
+    // Shuffle the password to randomize positions of required characters
+    password = shuffleString(password);
+  } else {
+    // Standard random generation
+    for (let i = 0; i < length; i++) {
+      password += getSecureRandomChar(allowedChars);
+    }
   }
-
+  
+  // Update UI with new password
   passwordDisplay.value = password;
-
-  // Update strength meter
   updatePasswordStrength(password);
+}
+
+// Helper function to shuffle a string
+function shuffleString(string) {
+  const array = string.split('');
+  
+  // Fisher-Yates shuffle algorithm
+  for (let i = array.length - 1; i > 0; i--) {
+    const randomBuffer = new Uint32Array(1);
+    window.crypto.getRandomValues(randomBuffer);
+    const j = randomBuffer[0] % (i + 1);
+    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+  }
+  
+  return array.join('');
 }
 
 function updateLengthValue() {
