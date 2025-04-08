@@ -2,7 +2,7 @@
   "name": "simple-html-passgen",
   "version": "1.0.0",
   "description": "---\r ###### ***Work in progress***\r ---",
-  "main": "script.js",
+  "main": "main.js",
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
