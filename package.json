@@ -5,7 +5,21 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.simplehtml.passgen",
+    "productName": "Simple HTML PassGen",
+    "files": [
+      "index.html",
+      "main.js",
+      "script.js",
+      "style.css",
+      "preload.js"
+    ],
+    "win": {
+      "target": "nsis"
+    }
   },
   "repository": {
     "type": "git",
@@ -19,6 +33,7 @@
   },
   "homepage": "https://github.com/polskapeeps/Simple-html-PassGen#readme",
   "devDependencies": {
-    "electron": "^35.1.4"
+    "electron": "^35.1.4",
+    "electron-builder": "^26.0.12"
   }
 }
