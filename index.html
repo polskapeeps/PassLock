@@ -44,18 +44,7 @@
         
         <div class="option">
           <label for="excludeChars">Exclude Characters:</label>
-          <input type="text" id="excludeChars" placeholder="e.g. 0O1Il|" />
-          <small class="option-description">Characters that might be confusing or not allowed by some sites</small>
-        </div>
-
-        <div class="option checkbox-option">
-          <input type="checkbox" id="avoidAmbiguous" />
-          <label for="avoidAmbiguous">Avoid Ambiguous Characters (0O1Il|)</label>
-        </div>
-        
-        <div class="option checkbox-option">
-          <input type="checkbox" id="requireAllTypes" />
-          <label for="requireAllTypes">Require All Selected Character Types</label>
+          <input type="text" id="excludeChars" placeholder="e.g. ${/}...<1337>" />
         </div>
 
         <div class="option checkbox-option">
@@ -77,6 +66,17 @@
           <input type="checkbox" id="includeSymbols" />
           <label for="includeSymbols">Include Symbols (!@#$%^&*)</label>
         </div>
+
+        <div class="option checkbox-option">
+          <input type="checkbox" id="requireAllTypes" />
+          <label for="requireAllTypes">Require All Selected Types</label>
+        </div>
+
+        <div class="option checkbox-option">
+          <input type="checkbox" id="avoidAmbiguous" />
+          <label for="avoidAmbiguous">Avoid Ambiguous (0O1Il|)</label>
+        </div>
+        
       </div>
 
       <button id="generateButton">Generate Password</button>
