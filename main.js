@@ -4,8 +4,8 @@ const path = require('path')
 // Function to create the main application window
 function createWindow() {
   const mainWindow = new BrowserWindow({
-    width: 450,
-    height: 800,
+    width: 400,
+    height: 650,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
