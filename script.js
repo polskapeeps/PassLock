@@ -81,7 +81,7 @@ function calculatePasswordStrength(password) {
   };
 }
 
-// Function to update the strength meter
+// update the strength meter
 function updatePasswordStrength(password) {
   const strength = calculatePasswordStrength(password);
 
@@ -102,7 +102,7 @@ function updatePasswordStrength(password) {
   } 
 }
 
-// --- Enhanced Password Generation ---
+// --- Password Generation ---
 function generatePassword() {
   const length = parseInt(lengthSlider.value);
   
@@ -117,7 +117,7 @@ function generatePassword() {
   const shouldAvoidAmbiguous = avoidAmbiguous.checked;
   const shouldRequireAllTypes = requireAllTypes.checked;
   
-  // Define ambiguous characters that can be confusing
+  // Define ambiguous characters 
   const ambiguousChars = "0O1Il|";
   
   // Prepare character sets
