@@ -1,16 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
 
 :root {
-  --bg-color: #212121;         /* Dark grey for background */
-  --container-bg: #424242;     /* Slightly lighter container */
-  --primary-color: #26A69A;    /* Teal (Primary) */
-  --primary-hover: #00897B;    /* Darker teal for hover */
-  --text-color: #FAFAFA;       /* Light text */
-  --text-muted: #BDBDBD;       /* Muted text */
+  --bg-color: #212121;         
+  --container-bg: #424242;     
+  --primary-color: #26A69A;    
+  --primary-hover: #00897B;    
+  --text-color: #FAFAFA;       
+  --text-muted: #BDBDBD;       
   --border-color: #616161;     
   --input-bg: #303030;         
-  --success-color: #66BB6A;    /* Green for success */
-  --error-color: #EF5350;      /* Red for errors */
+  --success-color: #66BB6A;    
+  --error-color: #EF5350;      
   --slider-track: #757575;
   --slider-thumb: #26A69A;
 }
