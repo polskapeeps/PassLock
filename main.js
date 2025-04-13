@@ -17,7 +17,7 @@ function createWindow() {
   mainWindow.loadFile('index.html')
   
   // Uncomment to open DevTools automatically (helpful for debugging)
-  mainWindow.webContents.openDevTools()
+ // mainWindow.webContents.openDevTools()
 }
 
 // Create window when Electron is ready
