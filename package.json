@@ -17,7 +17,7 @@
       "style.css"
     ],
     "win": {
-      "icon": "build/icon2.ico",
+      "icon": "build/icon.ico",
       "target": "nsis"
     }
   },
