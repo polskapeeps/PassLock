@@ -5,7 +5,7 @@ const path = require('path')
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 400,
-    height: 650,
+    height: 680,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
