@@ -1,5 +1,5 @@
 {
-  "name": "simple-html-passgen",
+  "name": "simply-gen",
   "version": "1.0.0",
   "description": "---\r ###### ***Work in progress***\r ---",
   "main": "main.js",
@@ -8,16 +8,16 @@
     "dist": "electron-builder"
   },
   "build": {
-    "appId": "com.simplehtml.passgen",
-    "productName": "Simple HTML PassGen",
+    "appId": "com.simply.passgen",
+    "productName": "Simply-Gen",
     "files": [
       "index.html",
       "main.js",
       "script.js",
-      "style.css",
-      "preload.js"
+      "style.css"
     ],
     "win": {
+      "icon": "build/icon.ico",
       "target": "nsis"
     }
   },
