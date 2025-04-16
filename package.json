@@ -1,7 +1,7 @@
 {
-  "name": "simply-gen",
-  "version": "1.0.1",
-  "description": "---\r ###### ***Work in progress***\r ---",
+  "name": "simply-passgen",
+  "version": "1.0.0",
+  "description": "A simple password generator with custom options. Designed to be used in a pinch when needed. Features to be added ",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -9,7 +9,7 @@
   },
   "build": {
     "appId": "com.simply.passgen",
-    "productName": "Simply-Gen",
+    "productName": "Simply PassGen",
     "files": [
       "index.html",
       "main.js",
@@ -17,7 +17,7 @@
       "style.css"
     ],
     "win": {
-      "icon": "build/icon.ico",
+      "icon": "build/icon-v2.ico",
       "target": "nsis"
     }
   },
