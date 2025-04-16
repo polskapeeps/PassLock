@@ -36,7 +36,7 @@ function calculatePasswordStrength(password) {
   let score = 0;
 
   if (password.length < 1) return { score: 0, text: "Too Short" };
-  
+
   score += Math.min(40, password.length * 2);
 
   // Check character variety
@@ -59,7 +59,7 @@ function calculatePasswordStrength(password) {
   // Calculate distribution score -- closer to even better --
   const idealRatio = 1 / Math.max(1, charVariety);
   const ratioScore = 20 * (1 - Math.max(
-    Math.abs(lowerRatio - idealRatio), 
+    Math.abs(lowerRatio - idealRatio),
     Math.abs(upperRatio - idealRatio),
     Math.abs(numberRatio - idealRatio),
     Math.abs(symbolRatio - idealRatio)
@@ -99,7 +99,7 @@ function updatePasswordStrength(password) {
     strengthMeterBar.style.backgroundColor = '#09c372'; // Green
   } else {
     strengthMeterBar.style.backgroundColor = '#007aff'; // Blue
-  } 
+  }
 }
 
 // --- Password Generation ---
@@ -113,30 +113,30 @@ function generatePassword() {
   const shouldAvoidAmbiguous = avoidAmbiguous.checked;
   const shouldRequireAllTypes = requireAllTypes.checked;
   const ambiguousChars = "0O1Il|";   // remove or make standard eventually
-  
-  if (shouldRequireAllTypes){
+
+  if (shouldRequireAllTypes) {
     const requiredCount = [uppercase, lowercase, numbers, symbols]
       .filter(Boolean).length;
     if (length < requiredCount) {
-      errorMessage.textContent = 
+      errorMessage.textContent =
         `Length must be at least ${requiredCount} to include all selected types.`;
       passwordDisplay.value = ''; // Clear display
       updatePasswordStrength(''); // Reset strength meter
       return;
     }
-}
+  }
 
   let allowedChars = "";
   let uppercaseSet = uppercaseChars;
   let lowercaseSet = lowercaseChars;
   let numberSet = numberChars;
   let symbolSet = symbolChars;
-  
+
   if (excludedChars || shouldAvoidAmbiguous) {
-    const exclusions = shouldAvoidAmbiguous 
-      ? excludedChars + ambiguousChars 
+    const exclusions = shouldAvoidAmbiguous
+      ? excludedChars + ambiguousChars
       : excludedChars;
-      
+
     for (const char of exclusions) {
       uppercaseSet = uppercaseSet.replace(char, "");
       lowercaseSet = lowercaseSet.replace(char, "");
@@ -144,47 +144,47 @@ function generatePassword() {
       symbolSet = symbolSet.replace(char, "");
     }
   }
-  
+
   // Add selected character sets to allowed characters
   if (uppercase) allowedChars += uppercaseSet;
   if (lowercase) allowedChars += lowercaseSet;
   if (numbers) allowedChars += numberSet;
   if (symbols) allowedChars += symbolSet;
-  
+
   // Validate character set selection
   if (!allowedChars) {
     errorMessage.textContent = "Please select at least one character type.";
     return;
   } else {
-    errorMessage.textContent = ""; 
+    errorMessage.textContent = "";
   }
-  
+
   // Generate the password
   let password = "";
-  
+
   if (shouldRequireAllTypes) {
     const requiredChars = [];
-    
-    if (uppercase && uppercaseSet.length > 0) 
+
+    if (uppercase && uppercaseSet.length > 0)
       requiredChars.push(getSecureRandomChar(uppercaseSet));
-      
-    if (lowercase && lowercaseSet.length > 0) 
+
+    if (lowercase && lowercaseSet.length > 0)
       requiredChars.push(getSecureRandomChar(lowercaseSet));
-      
-    if (numbers && numberSet.length > 0) 
+
+    if (numbers && numberSet.length > 0)
       requiredChars.push(getSecureRandomChar(numberSet));
-      
-    if (symbols && symbolSet.length > 0) 
+
+    if (symbols && symbolSet.length > 0)
       requiredChars.push(getSecureRandomChar(symbolSet));
-    
+
     // Add required characters
     password = requiredChars.join('');
-    
+
     // Fill the rest randomly
     for (let i = password.length; i < length; i++) {
       password += getSecureRandomChar(allowedChars);
     }
-    
+
     // Shuffle the password to randomize positions of required characters
     password = shuffleString(password);
   } else {
@@ -193,7 +193,7 @@ function generatePassword() {
       password += getSecureRandomChar(allowedChars);
     }
   }
-  
+
   // Update UI with new password
   passwordDisplay.value = password;
   updatePasswordStrength(password);
@@ -202,7 +202,7 @@ function generatePassword() {
 // Helper function to shuffle a string
 function shuffleString(string) {
   const array = string.split('');
-  
+
   // Fisher-Yates shuffle algorithm
   for (let i = array.length - 1; i > 0; i--) {
     const randomBuffer = new Uint32Array(1);
@@ -210,7 +210,7 @@ function shuffleString(string) {
     const j = randomBuffer[0] % (i + 1);
     [array[i], array[j]] = [array[j], array[i]]; // Swap elements
   }
-  
+
   return array.join('');
 }
 
