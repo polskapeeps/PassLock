@@ -9,7 +9,7 @@
   },
   "build": {
     "appId": "com.simply.passgen",
-    "productName": "Simply PassGen",
+    "productName": "PassLock",
     "files": [
       "index.html",
       "main.js",
@@ -17,14 +17,15 @@
       "style.css"
     ],
     "win": {
-      "icon": "build/icon-v2.ico",
+      "icon": "build/icon.ico",
       "target": "nsis"
     }
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/polskapeeps/Simple-html-PassGen.git"
+    "url": "git+https://github.com/polskapeeps/PassLock.git"
   },
+  
   "keywords": [],
   "author": "",
   "license": "MIT",
