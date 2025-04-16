@@ -1,7 +1,9 @@
-# Simply PassGen
+ # 🔑 Personal Password Generator - *PassLock* 🔑
 
-A sleek, minimalist password generator built for speed and convenience.  
-Designed as a personal-use web app, it offers custom password generation with copy-to-clipboard functionality, strength feedback, and a clean dark UI.
+ ---
+
+###### A sleek, minimalist password generator built for speed and convenience.  
+###### Designed as a personal-use web app, it offers custom password generation with copy-to-clipboard functionality, strength feedback, and a clean dark UI.
 
 ---
 
@@ -38,10 +40,10 @@ Make sure you have [Node.js](https://nodejs.org/) installed.
 
 ```bash
 # Clone the repo
-git clone https://github.com/polskapeeps/Simple-html-PassGen
+git clone https://github.com/polskapeeps/PassLock
 
 # Navigate to project folder
-cd Simple-html-PassGen
+cd '/path/to/directory/PassLock'
 
 # Install dependencies
 npm install
@@ -95,6 +97,6 @@ Attribution appreciated, but not required.
 
 This was built for fun and personal use — but if you find it useful or want to help expand it, feel free to fork or submit ideas!
 
-GitHub: [polskapeeps/Simple-html-PassGen](https://github.com/polskapeeps/Simple-html-PassGen)
+GitHub: [polskapeeps/PassLock](https://github.com/polskapeeps/PassLock)
 
 ---
