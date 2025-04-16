@@ -30,9 +30,9 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/polskapeeps/Simple-html-PassGen/issues"
+    "url": "https://github.com/polskapeeps/PassLock/issues"
   },
-  "homepage": "https://github.com/polskapeeps/Simple-html-PassGen#readme",
+  "homepage": "https://github.com/polskapeeps/PassLock#readme",
   "devDependencies": {
     "electron": "^35.1.4",
     "electron-builder": "^26.0.12"
