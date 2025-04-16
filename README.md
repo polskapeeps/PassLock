@@ -2,8 +2,16 @@
 
  ---
 
-###### A sleek, minimalist password generator built for speed and convenience.  
-###### Designed as a personal-use web app, it offers custom password generation with copy-to-clipboard functionality, strength feedback, and a clean dark UI.
+###### A very minimal password generator I decided to build for myself, wanting to avoid opening up a password manager for the same result.
+
+###### Intended as a personal use project originally, now planning on future improvements and expanseion.
+ 
+###### **Currently offers**
+  - custom password generation
+  - option selections 
+  - copy functionality 
+  - strength feedback 
+  - clean UI
 
 ---
 
