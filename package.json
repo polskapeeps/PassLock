@@ -1,5 +1,5 @@
 {
-  "name": "simply-passgen",
+  "name": "passlock",
   "version": "1.0.0",
   "description": "A simple password generator with custom options. Designed to be used in a pinch when needed. Features to be added ",
   "main": "main.js",
