@@ -105,29 +105,33 @@ function updatePasswordStrength(password) {
 // --- Password Generation ---
 function generatePassword() {
   const length = parseInt(lengthSlider.value);
-  
-  // Get character set options
   const uppercase = includeUppercase.checked;
   const lowercase = includeLowercase.checked;
   const numbers = includeNumbers.checked;
   const symbols = includeSymbols.checked;
-  
-  // Get exclusion options
   const excludedChars = excludeChars.value;
   const shouldAvoidAmbiguous = avoidAmbiguous.checked;
   const shouldRequireAllTypes = requireAllTypes.checked;
+  const ambiguousChars = "0O1Il|";   // remove or make standard eventually
   
-  // Define ambiguous characters 
-  const ambiguousChars = "0O1Il|";
-  
-  // Prepare character sets
+  if (shouldRequireAllTypes){
+    const requiredCount = [uppercase, lowercase, numbers, symbols]
+      .filter(Boolean).length;
+    if (length < requiredCount) {
+      errorMessage.textContent = 
+        `Length must be at least ${requiredCount} to include all selected types.`;
+      passwordDisplay.value = ''; // Clear display
+      updatePasswordStrength(''); // Reset strength meter
+      return;
+    }
+}
+
   let allowedChars = "";
   let uppercaseSet = uppercaseChars;
   let lowercaseSet = lowercaseChars;
   let numberSet = numberChars;
   let symbolSet = symbolChars;
   
-  // Remove excluded characters from each set
   if (excludedChars || shouldAvoidAmbiguous) {
     const exclusions = shouldAvoidAmbiguous 
       ? excludedChars + ambiguousChars 
@@ -152,14 +156,13 @@ function generatePassword() {
     errorMessage.textContent = "Please select at least one character type.";
     return;
   } else {
-    errorMessage.textContent = ""; // Clear any previous error message
+    errorMessage.textContent = ""; 
   }
   
   // Generate the password
   let password = "";
   
   if (shouldRequireAllTypes) {
-    // Ensure at least one character from each selected type
     const requiredChars = [];
     
     if (uppercase && uppercaseSet.length > 0) 
