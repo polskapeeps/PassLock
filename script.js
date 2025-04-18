@@ -16,8 +16,6 @@ const errorMessage = document.getElementById("error-message");
 const strengthMeter = document.getElementById("strength-meter");
 const strengthMeterBar = document.querySelector(".strength-meter-bar");
 const strengthText = document.getElementById("strength-text");
-
-// --- Character Sets ---
 const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
 const numberChars = "0123456789";
