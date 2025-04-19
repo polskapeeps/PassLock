@@ -1,5 +1,8 @@
 const { app, BrowserWindow } = require('electron')
 const path = require('path')
+const createTray = require('./tray.js');
+
+let mainWindow = null;
 
 // Function to create the main application window
 function createWindow() {
@@ -19,7 +22,8 @@ function createWindow() {
 
 // Create window when Electron is ready
 app.whenReady().then(() => {
-  createWindow()
+  createWindow();
+  createTray(mainWindow);
   
   // On macOS, recreate window when dock icon is clicked
   app.on('activate', function () {
