@@ -21,6 +21,10 @@
   padding: 0;
 }
 
+html, body {
+  background: transparent;
+}
+
 body {
     -webkit-app-region:drag;
     border-radius: 60px; 
