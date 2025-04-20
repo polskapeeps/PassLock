@@ -1,39 +1,39 @@
-const { app, BrowserWindow } = require('electron')
-const path = require('path')
+// main.js
+const { app, BrowserWindow } = require('electron');
+const path = require('path');
 const createTray = require('./tray.js');
 
-let mainWindow = null;
+let mainWindow;          // <-- keep a single global reference
+let tray;                //   (needed in more than one place)
+let isQuitting = false;  //   (used when user chooses “Quit”)
 
-// Function to create the main application window
-function createWindow() {
-  const mainWindow = new BrowserWindow({
+function createWindow () {
+  // DO NOT use “const” here – assign to the global
+  mainWindow = new BrowserWindow({
     width: 400,
     height: 680,
+    show: false,                 // start hidden – we’ll show from the tray
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      //preload: path.join(__dirname, 'preload.js')
-    }
-  })
+      // preload: path.join(__dirname, 'preload.js'),
+    },
+  });
 
-  // Load source
-  mainWindow.loadFile('index.html')
+  mainWindow.loadFile('index.html');
+
+  // ⬇︎ Close button ➜ hide instead of quit
+  mainWindow.on('close', (e) => {
+    if (!isQuitting) {           // block normal close unless we’re really quitting
+      e.preventDefault();
+      mainWindow.hide();
+    }
+  });
 }
 
 app.whenReady().then(() => {
   createWindow();
-  createTray(mainWindow);
-  const tray = createTray(mainWindow);
+  tray = createTray(mainWindow); // only **one** call ‑ pass the live window
+});
 
-  // On macOS, recreate window when dock icon is clicked
-  app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
-})
-
-// stay put
-app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin' && mainWindow) {
-    mainWindow.hide();
-  }
-})
+app.on('before-quit', () => (isQuitting = true));

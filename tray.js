@@ -1,43 +1,42 @@
-const { Tray, Menu, BrowserWindow } = require('electron');
+// tray.js
+const { Tray, Menu, app } = require('electron');
 const path = require('path');
 
-let tray = null;
+function createTray (mainWindow) {
+  // Use whatever icon(s) you packaged
+  const icon = path.join(
+    __dirname,
+    'build',
+    process.platform === 'win32' ? 'icon.ico' : 'icon.png'
+  );
 
-function createTray(mainWindow) {
-    tray = new Tray(path.join(__dirname, 'build/icon.ico'));    const contextMenu = Menu.buildFromTemplate([
-        { Label: 'Passlock 1.0', 
-            click: () => {
-                mainWindow.show();
-            }
-        },
-        {
-            label: 'Quit',
-            click: () => {
-                require('electron').app.quit();
-            }
-        }
-    ]);
+  const tray = new Tray(icon);
 
-    tray.setToolTip('PassLock');
-    tray.setContextMenu(contextMenu);
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'Open PassLock',
+      click: () => mainWindow.show(),
+    },
+    { type: 'separator' },
+    {
+      label: 'Quit',
+      click: () => app.quit(),   // sets isQuitting in main.js
+    },
+  ]);
 
-    tray.on('click', () => {
-    if (mainWindow && !mainWindow.isDestroyed()) {
-        if (mainWindow.isVisible()) {
-            mainWindow.focus();
-        } else {
-            mainWindow.show();
-        }
+  tray.setToolTip('PassLock');
+  tray.setContextMenu(contextMenu);
+
+  // Left‑click = toggle show/hide
+  tray.on('click', () => {
+    if (mainWindow.isVisible()) {
+      mainWindow.focus();
     } else {
-        console.error('Cannot show window');
+      mainWindow.show();
     }
-});
+  });
 
-tray.setVisible(true);
-
-return tray.setVisible(true);
-
+  return tray;
 }
 
 module.exports = createTray;
-
