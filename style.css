@@ -21,18 +21,26 @@
   padding: 0;
 }
 
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
     -webkit-app-region:drag;
     border-radius: 60px; 
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
     font-family: "Poppins", sans-serif;
+    margin: 0;
     background-color: var(--bg-color);
     color: var(--text-color);
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 680px;
+    align-items: flex-start;
+    height: 100%;
     padding: 10px;
+    /* overflow: hidden; */
+    
   }
 
   button, input, select, label, a {

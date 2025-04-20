@@ -24,8 +24,12 @@ app.on('second-instance', () => {
 
 function createWindow () {
   mainWindow = new BrowserWindow({
-    width: 400,
-    height: 680, 
+    width: 380,
+    height: 580,
+    resizable: false,
+    maximizable: false,
+    fullscreenable: false,
+    useContentSize: true, 
     show: true,                      // open right away
     frame: false,
     webPreferences: {
