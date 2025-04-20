@@ -32,6 +32,8 @@ function createWindow () {
     useContentSize: true, 
     show: true,                      // open right away
     frame: false,
+    transparent: true,
+    backgroundColor: '#00000000',
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
