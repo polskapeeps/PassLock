@@ -21,14 +21,9 @@
   padding: 0;
 }
 
-html, body {
-  background: transparent;
-}
-
 body {
     -webkit-app-region:drag;
     border-radius: 60px; 
-    border: px solid #ccc; 
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
     font-family: "Poppins", sans-serif;
     background-color: var(--bg-color);
@@ -36,7 +31,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 50vh;
+    min-height: 680px;
     padding: 10px;
   }
 
