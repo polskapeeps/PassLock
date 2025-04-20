@@ -4,7 +4,7 @@ const path = require('path');
 let tray = null;
 
 function createTray(mainWindow) {
-tray = new Tray(path.join(__dirname, 'build', 'icon.ico'));    const contextMenu = Menu.buildFromTemplate([
+    tray = new Tray(path.join(__dirname, 'build/icon.ico'));    const contextMenu = Menu.buildFromTemplate([
         { Label: 'Passlock 1.0', 
             click: () => {
                 mainWindow.show();
