@@ -20,6 +20,11 @@ function createTray(mainWindow) {
 
     tray.setToolTip('PassLock');
     tray.setContextMenu(contextMenu);
+
+    tray.setVisible(true);
+
+    return tray.setVisible(true);
+
 }
 
 module.exports = createTray;
