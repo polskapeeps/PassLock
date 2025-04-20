@@ -16,22 +16,24 @@ function createWindow() {
     }
   })
 
-  // Load your existing index.html file
+  // Load source
   mainWindow.loadFile('index.html')
 }
 
-// Create window when Electron is ready
 app.whenReady().then(() => {
   createWindow();
   createTray(mainWindow);
-  
+  const tray = createTray(mainWindow);
+
   // On macOS, recreate window when dock icon is clicked
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 })
 
-// Quit the app when all windows are closed (except on macOS)
+// stay put
 app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit()
+  if (process.platform !== 'darwin' && mainWindow) {
+    mainWindow.hide();
+  }
 })
