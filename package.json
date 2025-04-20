@@ -15,7 +15,8 @@
       "main.js",
       "script.js",
       "style.css",
-      "tray.js"
+      "tray.js",
+      "build/icon.ico"
     ],
     "win": {
       "icon": "build/icon.ico",
