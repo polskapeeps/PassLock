@@ -22,18 +22,23 @@
 }
 
 body {
-  border-radius: 20px; 
-  border: 1px solid #ccc; 
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
-  font-family: "Poppins", sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 50vh;
-  padding: 10px;
-}
+    -webkit-app-region:drag;
+    border-radius: 60px; 
+    border: px solid #ccc; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    font-family: "Poppins", sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+    padding: 10px;
+  }
+
+  button, input, select, label, a {
+    -webkit-app-region: no-drag;
+  }
 
 .container {
   background-color: var(--container-bg);
