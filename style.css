@@ -29,7 +29,6 @@ html, body {
 body {
     -webkit-app-region:drag;
     border-radius: 60px; 
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
     font-family: "Poppins", sans-serif;
     margin: 0;
     background-color: var(--bg-color);
@@ -49,9 +48,10 @@ body {
 
 .container {
   background-color: var(--container-bg);
-  padding: 30px 20px;
+  padding: 20px;
   border-radius: 60px;
-  box-shadow: 0 50px 25px rgba(0, 0, 0, 0.4);
+  box-shadow: none;
+  filter: drop-shadow(0 40px 25px rgba(0, 0, 0, .40));
   width: 100%;
   max-width: 350px;
   text-align: center;
@@ -59,7 +59,7 @@ body {
 
 h1 {
   color: var(--primary-hover);
-  margin-bottom: 20px;
+  margin: 10px;
   font-size: 1.5rem;
   font-weight: 900;
   text-shadow: 0 0 30px var(--primary-color);
