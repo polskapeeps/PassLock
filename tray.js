@@ -1,4 +1,4 @@
-const { Tray, Menu } = require('electron');
+const { Tray, Menu, BrowserWindow } = require('electron');
 const path = require('path');
 
 let tray = null;
@@ -21,11 +21,23 @@ function createTray(mainWindow) {
     tray.setToolTip('PassLock');
     tray.setContextMenu(contextMenu);
 
-    tray.setVisible(true);
+    tray.on('click', () => {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+        if (mainWindow.isVisible()) {
+            mainWindow.focus();
+        } else {
+            mainWindow.show();
+        }
+    } else {
+        console.error('Cannot show window');
+    }
+});
 
-    return tray.setVisible(true);
+tray.setVisible(true);
+
+return tray.setVisible(true);
 
 }
 
 module.exports = createTray;
-  
+
