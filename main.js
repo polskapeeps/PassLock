@@ -24,13 +24,13 @@ app.on('second-instance', () => {
 
 function createWindow () {
   mainWindow = new BrowserWindow({
-    width: 400,
-    height: 640,
+    width: 380,
+    height: 600,
     resizable: false,
     maximizable: false,
     fullscreenable: false,
     useContentSize: true, 
-    show: true,                      // open right away
+    show: true,                      
     frame: false,
     transparent: true,
     backgroundColor: '#00000000',

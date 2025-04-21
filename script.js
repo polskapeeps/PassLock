@@ -101,7 +101,7 @@ function updatePasswordStrength(password) {
 }
 
 // --- Password Generation ---
-function generatePassword() {
+function generatePassword() { // add  below potentnetially - copyMessage.classList.remove("show");
   const length = parseInt(lengthSlider.value);
   const uppercase = includeUppercase.checked;
   const lowercase = includeLowercase.checked;
@@ -221,8 +221,8 @@ function copyToClipboard() {
     navigator.clipboard.writeText(passwordDisplay.value);
     copyMessage.classList.add("show");
     setTimeout(() => {
-      copyMessage.classList.remove("show");
-    }, 3000); // Message disappears after 3 seconds
+      copyMessage.classList.remove("show"); // remove if potentially
+    }, 10000); // Message disappears after 3 seconds
   }
 }
 

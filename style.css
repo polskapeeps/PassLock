@@ -38,7 +38,7 @@ body {
     align-items: center;
     height: 100%;
     width: 100%;
-    padding: 10;
+    padding: 10px;
     
   }
 
@@ -48,13 +48,13 @@ body {
 
 .container {
   background-color: var(--container-bg);
-  padding: 20px;
+  padding: 10px;
   border-radius: 60px;
   box-shadow: none;
   filter: none;
   width: fit-content;
   height: fit-content;
-  max-width: 350px;
+  max-width: 380px;
   text-align: center;
 }
 
@@ -111,13 +111,14 @@ h1 {
 .copy-message {
   color: var(--success-color);
   font-size: 0.7em;
-  margin-bottom: 1px;
+  margin: 1px;
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
 .copy-message.show {
   opacity: 2;
+  margin: 5px;
 }
 
 .strength-meter {
