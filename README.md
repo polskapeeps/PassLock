@@ -1,4 +1,5 @@
- # 🔑 Personal Password Generator - *PassLock* 🔑
+ # 🔑 *PassLock* 🔑
+### Pasword Generator 
 
  ---
 
