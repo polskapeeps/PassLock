@@ -1,9 +1,9 @@
  # 🔑 *PassLock* 🔑
  ---
 
-###### A very minimal password generator build for myself, wanting to avoid opening up a password manager for the same result. Ended up being a while thing. Well, here it is!
+###### A very minimalastic password generator built for myself, wanting to avoid opening up a password manager for the same result. Ended up being a whole thing. Well, here it is!
 
-###### Intended as just a personal use project, but now planning on future expansion down the road. 
+###### Intended as just a personal use project, feedback is always welcome as im not entirely knowledgable in the field as of this writing.
  
 ---
 
