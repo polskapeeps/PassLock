@@ -17,20 +17,20 @@
 
 * {
   box-sizing: border-box;
-  margin: 10;
-  padding: 10;
+  margin: 0;
+  padding: 0;
 }
 
 html, body {
   height: 100%;
   overflow: hidden;
+  background: transparent;
 }
 
 body {
     -webkit-app-region:drag;
     border-radius: 15px;
     font-family: "Poppins", sans-serif;
-    margin: 0;
     background-color: var(--bg-color);
     color: var(--text-color);
     display: flex;
@@ -38,8 +38,8 @@ body {
     align-items: center;
     height: 100%;
     width: 100%;
-    padding: 5px;
-    
+    padding: 0;
+    margin: 0;
   }
 
   button, input, select, label, a {
