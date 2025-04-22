@@ -1,9 +1,4 @@
  # 🔑 *PassLock* 🔑
-<<<<<<< HEAD
-### Pasword Generator 
-=======
->>>>>>> Electron-DesktopApp
-
  ---
 
 ###### A very minimal password generator build for myself, wanting to avoid opening up a password manager for the same result. Ended up being a while thing. Well, here it is!
