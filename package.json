@@ -1,11 +1,13 @@
 {
   "name": "passlock",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple password generator with custom options. Designed to be used in a pinch when needed. Features to be added ",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "dist:mac": "electron-builder --mac",
+    "dist:win": "electron-builder --win"
   },
   "build": {
     "appId": "com.polskapeeps.passlock",
@@ -16,11 +18,42 @@
       "script.js",
       "style.css",
       "tray.js",
-      "build/icon.ico"
+      "build/icon.ico",
+      "build/icon.icns"
     ],
     "win": {
       "icon": "build/icon.ico",
       "target": "nsis"
+    },
+    "mac": {
+      "icon": "build/icon.icns",
+      "category": "public.app-category.utilities",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "darkModeSupport": true
+    },
+    "dmg": {
+      "background": "build/background.png",
+      "icon": "build/icon.icns",
+      "iconSize": 100,
+      "window": {
+        "width": 380,
+        "height": 600
+      },
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
     }
   },
   "repository": {
