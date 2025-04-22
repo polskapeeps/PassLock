@@ -30,6 +30,7 @@ html, body {
 body {
     -webkit-app-region:drag;
     border-radius: 15px;
+    overflow: hidden;
     font-family: "Poppins", sans-serif;
     background-color: var(--bg-color);
     color: var(--text-color);

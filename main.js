@@ -34,6 +34,7 @@ function createWindow () {
     frame: false,
     transparent: true,
     backgroundColor: '#00000000',
+    roundedCorners:true,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
