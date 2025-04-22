@@ -1,33 +1,59 @@
-const { app, BrowserWindow } = require('electron')
-const path = require('path')
+// main.js
+const { app, BrowserWindow } = require('electron');
+const path  = require('path');
+const createTray = require('./tray.js');
 
-// Function to create the main application window
-function createWindow() {
-  const mainWindow = new BrowserWindow({
-    width: 400,
-    height: 680,
+let mainWindow;
+let tray;
+let isQuitting = false;
+
+/* ---------- single‑instance guard ---------- */
+const gotLock = app.requestSingleInstanceLock();
+if (!gotLock) {
+  app.quit();                        // another copy is already running
+  return;
+}
+app.on('second-instance', () => {
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.show();
+    mainWindow.focus();
+  }
+});
+/* ------------------------------------------- */
+
+function createWindow () {
+  mainWindow = new BrowserWindow({
+    width: 380,
+    height: 600,
+    resizable: false,
+    maximizable: false,
+    fullscreenable: false,
+    useContentSize: true, 
+    show: true,                      
+    frame: false,
+    transparent: true,
+    backgroundColor: '#00000000',
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      //preload: path.join(__dirname, 'preload.js')
-    }
-  })
+    },
+  });
 
-  // Load your existing index.html file
-  mainWindow.loadFile('index.html')
+  mainWindow.loadFile('index.html');
+
+  // Close button ➜ hide to tray
+  mainWindow.on('close', (e) => {
+    if (!isQuitting) {
+      e.preventDefault();
+      mainWindow.hide();
+    }
+  });
 }
 
-// Create window when Electron is ready
 app.whenReady().then(() => {
-  createWindow()
-  
-  // On macOS, recreate window when dock icon is clicked
-  app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
-})
+  createWindow();
+  tray = createTray(mainWindow);
+});
 
-// Quit the app when all windows are closed (except on macOS)
-app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit()
-})
+app.on('before-quit', () => (isQuitting = true));

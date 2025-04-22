@@ -8,13 +8,15 @@
     "dist": "electron-builder"
   },
   "build": {
-    "appId": "com.simply.passgen",
+    "appId": "com.polskapeeps.passlock",
     "productName": "PassLock",
     "files": [
       "index.html",
       "main.js",
       "script.js",
-      "style.css"
+      "style.css",
+      "tray.js",
+      "build/icon.ico"
     ],
     "win": {
       "icon": "build/icon.ico",
@@ -25,7 +27,6 @@
     "type": "git",
     "url": "git+https://github.com/polskapeeps/PassLock.git"
   },
-  
   "keywords": [],
   "author": "",
   "license": "MIT",
@@ -36,5 +37,8 @@
   "devDependencies": {
     "electron": "^35.1.4",
     "electron-builder": "^26.0.12"
+  },
+  "dependencies": {
+    "secure-random-password": "^0.2.3"
   }
 }

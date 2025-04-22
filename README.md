@@ -1,22 +1,18 @@
  # 🔑 *PassLock* 🔑
+<<<<<<< HEAD
 ### Pasword Generator 
+=======
+>>>>>>> Electron-DesktopApp
 
  ---
 
-###### A very minimal password generator I decided to build for myself, wanting to avoid opening up a password manager for the same result.
+###### A very minimal password generator build for myself, wanting to avoid opening up a password manager for the same result. Ended up being a while thing. Well, here it is!
 
-###### Intended as a personal use project originally, now planning on future improvements and expanseion.
+###### Intended as just a personal use project, but now planning on future expansion down the road. 
  
-###### **Currently offers**
-  - custom password generation
-  - option selections 
-  - copy functionality 
-  - strength feedback 
-  - clean UI
-
 ---
 
-### 🚀 Features
+### 🚀 Whats included
 
 - Adjustable password length (4–28 characters)
 - Real-time strength meter with detailed feedback
