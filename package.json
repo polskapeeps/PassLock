@@ -18,11 +18,11 @@
       "script.js",
       "style.css",
       "tray.js",
-      "build/icon.ico",
+      "assets/Icons/favicon.ico",
       "build/icon.icns"
     ],
     "win": {
-      "icon": "build/icon.ico",
+      "icon": "assets/Icons/favicon.ico",
       "target": "nsis"
     },
     "mac": {
