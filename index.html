@@ -4,9 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PassLock</title>
-    <link rel="apple-touch-icon" href="assets/Icons/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/Icons/favicon-16x16.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/Icons/favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="assets/icons/favicon-16x16.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assets/icons/favicon-32x32.png"
+    />
     <link rel="stylesheet" href="style.css" />
     <link
       rel="stylesheet"
@@ -29,11 +39,11 @@
           <i class="far fa-copy"></i>
         </button>
       </div>
-      
+
       <div id="strength-meter" class="strength-meter">
         <div class="strength-meter-bar"></div>
       </div>
-      <div id="strength-text" class="strength-text">Password Strength: </div>
+      <div id="strength-text" class="strength-text">Password Strength:</div>
 
       <div id="copyMessage" class="copy-message">Copied to clipboard</div>
 
@@ -44,10 +54,14 @@
           >
           <input type="range" id="lengthSlider" min="4" max="28" value="16" />
         </div>
-        
+
         <div class="option">
           <label for="excludeChars">Exclude Characters:</label>
-          <input type="text" id="excludeChars" placeholder="e.g. ${/}...<1337>" />
+          <input
+            type="text"
+            id="excludeChars"
+            placeholder="e.g. ${/}...<1337>"
+          />
         </div>
 
         <div class="option checkbox-option">
@@ -79,7 +93,6 @@
           <input type="checkbox" id="avoidAmbiguous" />
           <label for="avoidAmbiguous">Avoid Ambiguous (0O1Il|)</label>
         </div>
-        
       </div>
 
       <button id="generateButton">Generate Password</button>
