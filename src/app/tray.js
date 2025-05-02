@@ -1,34 +1,35 @@
 // tray.js
-const { Tray, Menu, app } = require('electron');
-const path = require('path');
+const { Tray, Menu, app } = require("electron");
+const path = require("path");
 
-function createTray (mainWindow) {
+function createTray(mainWindow) {
   // Use whatever icon(s) you packaged
   const icon = path.join(
-    __dirname,
-    'build',
-    process.platform === 'win32' ? 'icon.ico' : 'icon.png'
+    app.getAppPath(),
+    "assets",
+    "icons",
+    process.platform === "win32" ? "favicon.ico" : "icon.png"
   );
 
   const tray = new Tray(icon);
 
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: 'Open PassLock',
+      label: "Open PassLock",
       click: () => mainWindow.show(),
     },
-    { type: 'separator' },
+    { type: "separator" },
     {
-      label: 'Quit',
-      click: () => app.quit(),   // sets isQuitting in main.js
+      label: "Quit",
+      click: () => app.quit(), // sets isQuitting in main.js
     },
   ]);
 
-  tray.setToolTip('PassLock');
+  tray.setToolTip("PassLock");
   tray.setContextMenu(contextMenu);
 
   // Left‑click = toggle show/hide
-  tray.on('click', () => {
+  tray.on("click", () => {
     if (mainWindow.isVisible()) {
       mainWindow.focus();
     } else {
