@@ -41,7 +41,7 @@ function createWindow () {
     },
   });
 
-  mainWindow.loadFile('index.html');
+  mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
 
   // Close button ➜ hide to tray
   mainWindow.on('close', (e) => {

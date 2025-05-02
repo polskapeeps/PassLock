@@ -13,16 +13,16 @@
     "appId": "com.polskapeeps.passlock",
     "productName": "PassLock",
     "files": [
-      "index.html",
       "src/app/main.js",
       "src/app/tray.js",
-      "script.js",
-      "style.css",
-      "assets/Icons/favicon.ico",
+      "src/renderer/index.html",
+      "src/renderer/script.js",
+      "src/renderer/style.css",
+      "assets/icons/favicon.ico",
       "build/icon.icns"
     ],
     "win": {
-      "icon": "assets/Icons/favicon.ico",
+      "icon": "assets/icons/favicon.ico",
       "target": "nsis"
     },
     "mac": {
