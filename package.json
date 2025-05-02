@@ -2,7 +2,7 @@
   "name": "passlock",
   "version": "1.0.1",
   "description": "A simple password generator with custom options. Designed to be used in a pinch when needed. Features to be added ",
-  "main": "main.js",
+  "main": "src/app/main.js",
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder",
@@ -14,10 +14,10 @@
     "productName": "PassLock",
     "files": [
       "index.html",
-      "main.js",
+      "src/app/main.js",
+      "src/app/tray.js",
       "script.js",
       "style.css",
-      "tray.js",
       "assets/Icons/favicon.ico",
       "build/icon.icns"
     ],
