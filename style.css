@@ -1,307 +1,434 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
+/* Import Google Font */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
 
+/* Define CSS Variables for theming and consistency */
 :root {
-  --bg-color: #212121;         
-  --container-bg: #424242;     
-  --primary-color: #26A69A;    
-  --primary-hover: #00897B;    
-  --text-color: #FAFAFA;       
-  --text-muted: #BDBDBD;       
-  --border-color: #616161;     
-  --input-bg: #303030;         
-  --success-color: #66BB6A;    
-  --error-color: #EF5350;      
-  --slider-track: #757575;
+  --bg-color: #212121;
+  --container-bg: #3a3a3a; /* Slightly lighter container */
+  --primary-color: #26A69A;
+  --primary-hover: #00897B;
+  --text-color: #FAFAFA;
+  --text-muted: #BDBDBD;
+  --border-color: #555555; /* Slightly lighter border */
+  --input-bg: #2c2c2c; /* Slightly darker input */
+  --success-color: #66BB6A;
+  --error-color: #EF5350;
+  --slider-track: #616161; /* Darker track */
   --slider-thumb: #26A69A;
+  --slider-thumb-hover: #00897B;
+  --toggle-bg-off: #616161;
+  --toggle-bg-on: var(--primary-hover);
+  --toggle-knob: #FAFAFA;
 }
 
+/* Basic Reset */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* Ensure html and body take full height and allow transparency */
 html, body {
   height: 100%;
-  overflow: hidden;
-  background: transparent;
+  overflow: hidden; /* Prevent scrollbars on body */
+  background: transparent; /* For Electron transparency */
 }
 
+/* Body styles: font, background, enable dragging */
 body {
-    -webkit-app-region:drag;
-    border-radius: 15px;
-    overflow: hidden;
-    font-family: "Poppins", sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-  }
+  -webkit-app-region: drag; /* Allow dragging the window */
+  border-radius: 12px; /* Rounded corners for the window */
+  overflow: hidden; /* Clip content to rounded corners */
+  font-family: "Poppins", sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  font-size: 14px; /* Base font size */
+}
 
-  button, input, select, label, a {
-    -webkit-app-region: no-drag;
-  }
+/* Prevent dragging on interactive elements */
+button, input, select, label, a, textarea {
+  -webkit-app-region: no-drag;
+}
 
+/* Main container styling */
 .container {
   background-color: var(--container-bg);
-  padding: 10px;
-  border-radius: 60px;
-  box-shadow: none;
-  filter: none;
-  width: fit-content;
-  height: fit-content;
-  max-width: 380px;
+  padding: 20px 25px; /* More padding */
+  border-radius: 10px; /* Consistent rounded corners */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Softer shadow */
+  width: 100%; /* Take full width within body padding */
+  max-width: 380px; /* Max width */
+  height: auto; /* Adjust height based on content */
+  max-height: 95vh; /* Prevent excessive height */
+  overflow-y: auto; /* Allow scrolling if content overflows */
   text-align: center;
+  /* Custom scrollbar for webkit browsers */
+  &::-webkit-scrollbar {
+      width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+      background: var(--input-bg);
+      border-radius: 3px;
+  }
+  &::-webkit-scrollbar-thumb {
+      background-color: var(--primary-color);
+      border-radius: 3px;
+  }
 }
 
+
+/* Heading style */
 h1 {
-  color: var(--primary-hover);
-  margin: 10px;
-  font-size: 1.5rem;
-  font-weight: 900;
-  text-shadow: 0 0 30px var(--primary-color);
+  color: var(--primary-color); /* Use primary color */
+  margin-bottom: 20px; /* Increased margin */
+  font-size: 1.6rem; /* Slightly larger */
+  font-weight: 600; /* Adjusted weight */
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3); /* Subtle shadow */
 }
 
+/* Password display area */
 .password-display-container {
   display: flex;
   align-items: center;
-  margin-bottom: 1px;
+  margin-bottom: 10px; /* Space below display */
   position: relative;
 }
 
+/* Password input field */
 #passwordDisplay {
   flex-grow: 1;
-  padding: 10px 20px;
+  padding: 12px 15px; /* More padding */
   font-size: 1.1rem;
   border: 1px solid var(--border-color);
   background-color: var(--input-bg);
   color: var(--text-color);
-  border-radius: 60px 2px 60px 2px;
+  border-radius: 6px 0 0 6px; /* Rounded left corners */
   outline: none;
-  font-family: "Courier New", Courier, monospace;
+  font-family: "Courier New", Courier, monospace; /* Monospaced for passwords */
+  transition: border-color 0.3s ease;
 }
-
+#passwordDisplay:focus {
+    border-color: var(--primary-color);
+}
 #passwordDisplay::placeholder {
   color: var(--text-muted);
+  opacity: 0.7;
 }
 
+/* Copy button */
 #copyButton {
-  padding: 5px 12px;
+  padding: 12px 15px;
   background-color: var(--primary-color);
-  color: var(--bg-color);
-  border: none;
-  border-left: 3px solid var(--bg-color);
-  border-right: 4px solid var(--bg-color);
-  border-radius: 2px 50px 2px 30px;
+  color: var(--bg-color); /* Dark text on light button */
+  border: 1px solid var(--primary-color);
+  border-left: none; /* Remove left border */
+  border-radius: 0 6px 6px 0; /* Rounded right corners */
   cursor: pointer;
   font-size: 1.1rem;
-  transition: background-color 0.5s ease;
-  margin-left: 5px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  line-height: 1; /* Ensure icon aligns well */
 }
-
 #copyButton:hover {
   background-color: var(--primary-hover);
-  box-shadow: 0 0 8px var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+#copyButton:active {
+  transform: scale(0.95);
 }
 
+/* Copy confirmation message */
 .copy-message {
   color: var(--success-color);
-  font-size: 0.7em;
-  margin: 10px;
+  font-size: 0.85em;
+  margin-top: 8px;
+  height: 1.2em; /* Reserve space */
   opacity: 0;
   transition: opacity 0.3s ease;
+  font-weight: 600;
 }
-
 .copy-message.show {
-  opacity: 5;
-  margin: 10px;
+  opacity: 1;
+}
+/* Specific style for history copy message */
+.history-copy-message {
+    margin-top: 5px;
+    text-align: left;
 }
 
+
+/* Strength meter */
 .strength-meter {
-  height: 7px;
+  height: 8px;
   width: 100%;
-  background-color: var(--text-muted);
-  border-radius: 60px 1px 60px 1px;
-  margin-top: 5px;
+  background-color: var(--input-bg); /* Darker background */
+  border-radius: 4px;
+  margin-top: 10px;
   overflow: hidden;
+  border: 1px solid var(--border-color);
 }
-
 .strength-meter-bar {
   height: 100%;
   width: 0;
-  border-radius: 60px 2px 60px 2px;
-  background-color: var(--primary-hover);
-  transition: width 0.3s ease, background-color 0.3s ease;
+  border-radius: 3px; /* Slightly less radius */
+  background-color: var(--error-color); /* Default to weak color */
+  transition: width 0.4s ease, background-color 0.4s ease;
 }
-
 .strength-text {
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
   text-align: left;
   margin-top: 5px;
-  height: .9em;
+  height: 1.2em; /* Reserve space */
 }
 
+/* Options container */
 .options {
-  margin-top: 10px;
-  margin-bottom: 3px;
+  margin-top: 20px;
+  margin-bottom: 20px;
   text-align: left;
 }
-
 .option {
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
+  margin-bottom: 15px; /* Consistent spacing */
+  /* Removed flex-direction, handled by specific types */
 }
-
 .option label {
   color: var(--text-muted);
-  margin-bottom: 1px;
-  font-size: 0.95rem;
+  margin-bottom: 5px; /* Space between label and input */
+  font-size: 0.9rem;
+  display: block; /* Make label block for spacing */
 }
 
+/* --- Enhanced Checkbox Toggle --- */
 .option.checkbox-option {
-  flex-direction: row;
+  display: flex; /* Use flex for alignment */
   align-items: center;
-  margin-bottom: 5px;
+  margin-bottom: 12px; /* Spacing for toggles */
 }
-
 .option.checkbox-option label {
-  margin-left: 5px;
+  margin-left: 10px; /* Space from toggle */
+  margin-bottom: 0; /* Reset margin for inline label */
   color: var(--text-color);
   cursor: pointer;
-  transition: color 0.6s ease;
+  transition: color 0.2s ease;
+  font-size: 0.95rem; /* Slightly larger label */
+  user-select: none; /* Prevent text selection */
 }
-
 .option.checkbox-option label:hover {
-  color: var(--primary-hover);
+  color: var(--primary-color);
+}
+.checkbox-option input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 38px; /* Width of the toggle */
+  height: 20px; /* Height of the toggle */
+  background-color: var(--toggle-bg-off); /* Off state background */
+  border: 1px solid var(--border-color);
+  border-radius: 10px; /* Pill shape */
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  flex-shrink: 0;
+}
+.checkbox-option input[type="checkbox"]::before {
+  content: "";
+  position: absolute;
+  width: 16px; /* Size of the inner circle */
+  height: 16px;
+  border-radius: 50%;
+  top: 1px;
+  left: 2px; /* Start position */
+  background-color: var(--toggle-knob); /* Circle color */
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+.checkbox-option input[type="checkbox"]:checked {
+  background-color: var(--toggle-bg-on); /* On state background */
+  border-color: var(--primary-color);
+}
+.checkbox-option input[type="checkbox"]:checked::before {
+  transform: translateX(18px); /* Move the circle to the right */
 }
 
 
-.option-description {
-  display: block;
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  margin-top: 3px;
-}
-
+/* Text input styling (Exclude Chars) */
 input[type="text"] {
   width: 100%;
-  padding: 5px 20px;
+  padding: 8px 12px;
   border: 1px solid var(--border-color);
   background-color: var(--input-bg);
   color: var(--text-color);
-  border-radius: 40px 2px 40px 2px;
+  border-radius: 4px;
   margin-top: 5px;
   font-family: "Courier New", Courier, monospace;
+  transition: border-color 0.3s ease;
 }
-
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
 input[type="text"]::placeholder {
   color: var(--text-muted);
+  opacity: 0.7;
 }
+
+/* --- Improved Slider Style --- */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 10px;
+  height: 8px;
+  /* Dynamic fill handled by JS */
   background: var(--slider-track);
-  border-radius: 60px 2px 60px 2px;
+  border-radius: 4px;
   cursor: pointer;
   outline: none;
+  transition: background 0.3s ease;
+  margin-top: 5px;
 }
-
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 10px;
+  width: 18px;
   height: 18px;
   background: var(--slider-thumb);
-  border-radius: 60%;
+  border-radius: 50%;
+  border: 2px solid var(--container-bg);
   cursor: pointer;
-  transition: background-color 0.5s ease;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
-
 input[type="range"]::-moz-range-thumb {
-  width: 10px;
+  width: 18px;
   height: 18px;
   background: var(--slider-thumb);
-  border-radius: 60%;
+  border-radius: 50%;
+  border: 2px solid var(--container-bg);
   cursor: pointer;
-  border: none;
-  transition: background-color 0.5s ease;
+  border: none; /* Override default */
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
-
-input[type="range"]:hover::-webkit-slider-thumb,
+input[type="range"]:hover::-webkit-slider-thumb {
+  background: var(--slider-thumb-hover);
+  box-shadow: 0 0 6px var(--slider-thumb-hover);
+}
 input[type="range"]:hover::-moz-range-thumb {
-  width: 8px;
-  background: var(--primary-hover);
+  background: var(--slider-thumb-hover);
+  box-shadow: 0 0 6px var(--slider-thumb-hover);
+}
+input[type="range"]:active::-webkit-slider-thumb,
+input[type="range"]:active::-moz-range-thumb {
+    transform: scale(1.1); /* Slight scale on grab */
 }
 
-input[type="checkbox"] {
-  appearance: none;
-  background-color: var(--input-bg);
-  border: 1px solid var(--border-color);
-  width: 20px;
-  height: 20px;
-  border-radius: 60px;
-  cursor: pointer;
-  position: relative;
-  transition: background-color 0.2s ease;
-  flex-shrink: 0;
-}
 
-input[type="checkbox"]:checked {
-  background-color: var(--primary-color);
-  border-color: var(--border-color);
-}
-
-input[type="checkbox"]:checked::after {
-  content: "\f00c";
-  font-family: "Font Awesome 6 Free";
-  font-weight: 900;
-  color: white;
-  font-size: 12px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
+/* Error message styling */
 #error-message {
   color: var(--error-color);
-  font-size: 0.9em;
-  margin-top: 6px;
+  font-size: 0.85em;
+  margin-top: 10px;
+  min-height: 1.2em; /* Reserve space */
+  text-align: left;
+  font-weight: 600;
 }
 
+/* --- History Section Styles --- */
+.history-container {
+    margin-top: 20px; /* Add space above history */
+    padding-top: 15px; /* Add padding inside */
+    border-top: 1px solid var(--border-color); /* Separator line */
+}
+.history-select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    font-family: "Courier New", Courier, monospace;
+    cursor: pointer;
+}
+.history-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+.history-select option {
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    padding: 5px;
+}
+#copyHistoryButton {
+    padding: 8px 15px;
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem; /* Smaller font for this button */
+    font-weight: 600;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+    align-self: flex-start;
+}
+#copyHistoryButton:hover:not(:disabled) {
+    background-color: var(--primary-hover);
+}
+#copyHistoryButton:disabled {
+    background-color: var(--slider-track);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+#copyHistoryButton i {
+    margin-right: 5px;
+}
+
+
+/* Generate button styling */
 #generateButton {
   background-color: var(--primary-color);
-  color: #1a1b1f;
-  border: 1px solid var(--border-color);
-  padding: 10px;
-  border-radius: 100px 1px 100px 1px;
-  font-size: 1.3rem;
-  font-weight: 750;
+  color: #ffffff; /* White text */
+  border: none; /* No border */
+  padding: 12px 20px; /* More padding */
+  border-radius: 6px; /* Consistent radius */
+  font-size: 1.1rem; /* Slightly larger font */
+  font-weight: 600;
   cursor: pointer;
-  width: 85%;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  width: 100%; /* Full width */
+  margin-top: 10px; /* Space above button */
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
 }
-
 #generateButton:hover {
   background-color: var(--primary-hover);
-  box-shadow: 0 0 8px var(--primary-hover);
+  box-shadow: 0 2px 8px rgba(0, 137, 123, 0.4); /* Shadow on hover */
 }
-
 #generateButton:active {
-  transform: scale(0.98);
+  transform: scale(0.98); /* Click effect */
 }
 
+/* Basic responsiveness (adjust as needed) */
 @media (max-width: 400px) {
   .container {
-    padding: 20px;
+    padding: 15px; /* Less padding on small screens */
+    max-height: 98vh; /* Allow more height */
+  }
+  h1 {
+    font-size: 1.4rem;
+  }
+  #passwordDisplay, #copyButton {
+      font-size: 1rem;
+      padding: 10px 12px;
+  }
+  #generateButton {
+      font-size: 1rem;
+      padding: 10px 15px;
+  }
+  .option.checkbox-option label {
+      font-size: 0.9rem;
   }
 }

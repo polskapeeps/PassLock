@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PassLock</title>
+    <title>PassLock V2</title>
     <link rel="apple-touch-icon" href="assets/Icons/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="assets/Icons/favicon-16x16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="assets/Icons/favicon-32x32.png" />
@@ -22,20 +22,22 @@
         <input
           type="text"
           id="passwordDisplay"
-          placeholder="Your Password Here"
+          placeholder="P4$5W0rD!"
           readonly
         />
         <button id="copyButton" title="Copy to Clipboard">
           <i class="far fa-copy"></i>
         </button>
       </div>
-      
+
       <div id="strength-meter" class="strength-meter">
         <div class="strength-meter-bar"></div>
       </div>
-      <div id="strength-text" class="strength-text">Password Strength: </div>
+      <div id="strength-text" class="strength-text">Strength:</div>
 
-      <div id="copyMessage" class="copy-message">Copied to clipboard</div>
+      <div id="copyMessage" class="copy-message">Copied!</div>
+      <div id="error-message" class="error-message"></div>
+
 
       <div class="options">
         <div class="option">
@@ -43,11 +45,6 @@
             >Password Length: <span id="lengthValue">16</span></label
           >
           <input type="range" id="lengthSlider" min="4" max="28" value="16" />
-        </div>
-        
-        <div class="option">
-          <label for="excludeChars">Exclude Characters:</label>
-          <input type="text" id="excludeChars" placeholder="e.g. ${/}...<1337>" />
         </div>
 
         <div class="option checkbox-option">
@@ -67,7 +64,7 @@
 
         <div class="option checkbox-option">
           <input type="checkbox" id="includeSymbols" />
-          <label for="includeSymbols">Include Symbols (!@#$%^&*)</label>
+          <label for="includeSymbols">Include Symbols (!@#$...)</label>
         </div>
 
         <div class="option checkbox-option">
@@ -79,13 +76,26 @@
           <input type="checkbox" id="avoidAmbiguous" />
           <label for="avoidAmbiguous">Avoid Ambiguous (0O1Il|)</label>
         </div>
-        
-      </div>
+
+        <div class="option">
+          <label for="excludeChars">Exclude Characters:</label>
+          <input type="text" id="excludeChars" placeholder="e.g., {}[]()/\\'" />
+        </div>
+
+        <div class="history-container option">
+            <label for="passwordHistory">Session History (Last 5):</label>
+            <select id="passwordHistory" class="history-select">
+                <option value="">-- No history yet --</option>
+                </select>
+            <button id="copyHistoryButton" title="Copy Selected History" disabled>
+                <i class="far fa-copy"></i> Copy Selected
+            </button>
+            <div id="copyHistoryMessage" class="copy-message history-copy-message">Copied History!</div>
+        </div>
+        </div>
 
       <button id="generateButton">Generate Password</button>
-      <div id="error-message" class="error-message"></div>
-    </div>
 
-    <script src="script.js"></script>
+    </div> <script src="script.js"></script>
   </body>
 </html>
