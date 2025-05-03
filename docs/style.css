@@ -1,0 +1,307 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
+
+:root {
+  --bg-color: #212121;         
+  --container-bg: #424242;     
+  --primary-color: #26A69A;    
+  --primary-hover: #00897B;    
+  --text-color: #FAFAFA;       
+  --text-muted: #BDBDBD;       
+  --border-color: #616161;     
+  --input-bg: #303030;         
+  --success-color: #66BB6A;    
+  --error-color: #EF5350;      
+  --slider-track: #757575;
+  --slider-thumb: #26A69A;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+body {
+    -webkit-app-region:drag;
+    border-radius: 15px;
+    overflow: hidden;
+    font-family: "Poppins", sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  button, input, select, label, a {
+    -webkit-app-region: no-drag;
+  }
+
+.container {
+  background-color: var(--container-bg);
+  padding: 10px;
+  border-radius: 60px;
+  box-shadow: none;
+  filter: none;
+  width: fit-content;
+  height: fit-content;
+  max-width: 380px;
+  text-align: center;
+}
+
+h1 {
+  color: var(--primary-hover);
+  margin: 10px;
+  font-size: 1.5rem;
+  font-weight: 900;
+  text-shadow: 0 0 30px var(--primary-color);
+}
+
+.password-display-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1px;
+  position: relative;
+}
+
+#passwordDisplay {
+  flex-grow: 1;
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  border-radius: 60px 2px 60px 2px;
+  outline: none;
+  font-family: "Courier New", Courier, monospace;
+}
+
+#passwordDisplay::placeholder {
+  color: var(--text-muted);
+}
+
+#copyButton {
+  padding: 5px 12px;
+  background-color: var(--primary-color);
+  color: var(--bg-color);
+  border: none;
+  border-left: 3px solid var(--bg-color);
+  border-right: 4px solid var(--bg-color);
+  border-radius: 2px 50px 2px 30px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background-color 0.5s ease;
+  margin-left: 5px;
+}
+
+#copyButton:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 0 8px var(--primary-hover);
+}
+
+.copy-message {
+  color: var(--success-color);
+  font-size: 0.7em;
+  margin: 10px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.copy-message.show {
+  opacity: 5;
+  margin: 10px;
+}
+
+.strength-meter {
+  height: 7px;
+  width: 100%;
+  background-color: var(--text-muted);
+  border-radius: 60px 1px 60px 1px;
+  margin-top: 5px;
+  overflow: hidden;
+}
+
+.strength-meter-bar {
+  height: 100%;
+  width: 0;
+  border-radius: 60px 2px 60px 2px;
+  background-color: var(--primary-hover);
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: left;
+  margin-top: 5px;
+  height: .9em;
+}
+
+.options {
+  margin-top: 10px;
+  margin-bottom: 3px;
+  text-align: left;
+}
+
+.option {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.option label {
+  color: var(--text-muted);
+  margin-bottom: 1px;
+  font-size: 0.95rem;
+}
+
+.option.checkbox-option {
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.option.checkbox-option label {
+  margin-left: 5px;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: color 0.6s ease;
+}
+
+.option.checkbox-option label:hover {
+  color: var(--primary-hover);
+}
+
+
+.option-description {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  margin-top: 3px;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 5px 20px;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  border-radius: 40px 2px 40px 2px;
+  margin-top: 5px;
+  font-family: "Courier New", Courier, monospace;
+}
+
+input[type="text"]::placeholder {
+  color: var(--text-muted);
+}
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 10px;
+  background: var(--slider-track);
+  border-radius: 60px 2px 60px 2px;
+  cursor: pointer;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 18px;
+  background: var(--slider-thumb);
+  border-radius: 60%;
+  cursor: pointer;
+  transition: background-color 0.5s ease;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 10px;
+  height: 18px;
+  background: var(--slider-thumb);
+  border-radius: 60%;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.5s ease;
+}
+
+input[type="range"]:hover::-webkit-slider-thumb,
+input[type="range"]:hover::-moz-range-thumb {
+  width: 8px;
+  background: var(--primary-hover);
+}
+
+input[type="checkbox"] {
+  appearance: none;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  width: 20px;
+  height: 20px;
+  border-radius: 60px;
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+input[type="checkbox"]:checked {
+  background-color: var(--primary-color);
+  border-color: var(--border-color);
+}
+
+input[type="checkbox"]:checked::after {
+  content: "\f00c";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  color: white;
+  font-size: 12px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#error-message {
+  color: var(--error-color);
+  font-size: 0.9em;
+  margin-top: 6px;
+}
+
+#generateButton {
+  background-color: var(--primary-color);
+  color: #1a1b1f;
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  border-radius: 100px 1px 100px 1px;
+  font-size: 1.3rem;
+  font-weight: 750;
+  cursor: pointer;
+  width: 85%;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+#generateButton:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 0 8px var(--primary-hover);
+}
+
+#generateButton:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 400px) {
+  .container {
+    padding: 20px;
+  }
+}

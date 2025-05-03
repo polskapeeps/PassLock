@@ -6,6 +6,6 @@ build/
 .DS_Store
 Thumbs.db
 
-References/
+.references/
 .vscode/
 node_modules/

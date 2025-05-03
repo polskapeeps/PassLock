@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PassLock</title>
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="assets/icons/favicon-16x16.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assets/icons/favicon-32x32.png"
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Generate Password</h1>
+
+      <div class="password-display-container">
+        <input
+          type="text"
+          id="passwordDisplay"
+          placeholder="Your Password Here"
+          readonly
+        />
+        <button id="copyButton" title="Copy to Clipboard">
+          <i class="far fa-copy"></i>
+        </button>
+      </div>
+
+      <div id="strength-meter" class="strength-meter">
+        <div class="strength-meter-bar"></div>
+      </div>
+      <div id="strength-text" class="strength-text">Password Strength:</div>
+
+      <div id="copyMessage" class="copy-message">Copied to clipboard</div>
+
+      <div class="options">
+        <div class="option">
+          <label for="lengthSlider"
+            >Password Length: <span id="lengthValue">16</span></label
+          >
+          <input type="range" id="lengthSlider" min="4" max="28" value="16" />
+        </div>
+
+        <div class="option">
+          <label for="excludeChars">Exclude Characters:</label>
+          <input
+            type="text"
+            id="excludeChars"
+            placeholder="e.g. ${/}...<1337>"
+          />
+        </div>
+
+        <div class="option checkbox-option">
+          <input type="checkbox" id="includeUppercase" checked />
+          <label for="includeUppercase">Include Uppercase (A-Z)</label>
+        </div>
+
+        <div class="option checkbox-option">
+          <input type="checkbox" id="includeLowercase" checked />
+          <label for="includeLowercase">Include Lowercase (a-z)</label>
+        </div>
+
+        <div class="option checkbox-option">
+          <input type="checkbox" id="includeNumbers" checked />
+          <label for="includeNumbers">Include Numbers (0-9)</label>
+        </div>
+
+        <div class="option checkbox-option">
+          <input type="checkbox" id="includeSymbols" />
+          <label for="includeSymbols">Include Symbols (!@#$%^&*)</label>
+        </div>
+
+        <div class="option checkbox-option">
+          <input type="checkbox" id="requireAllTypes" />
+          <label for="requireAllTypes">Require All Selected Types</label>
+        </div>
+
+        <div class="option checkbox-option">
+          <input type="checkbox" id="avoidAmbiguous" />
+          <label for="avoidAmbiguous">Avoid Ambiguous (0O1Il|)</label>
+        </div>
+      </div>
+
+      <button id="generateButton">Generate Password</button>
+      <div id="error-message" class="error-message"></div>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
