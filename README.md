@@ -1,102 +1,93 @@
- # 🔑 *PassLock* 🔑
- ---
+# PassLock
 
-###### A very minimalastic password generator built for myself, wanting to avoid opening up a password manager for the same result. Ended up being a whole thing. Well, here it is!
+PassLock is a desktop application for generating secure passwords with customizable options. It is built with Electron and provides a simple interface for creating strong passwords.
 
-###### Intended as just a personal use project, feedback is always welcome as im not entirely knowledgable in the field as of this writing.
- 
----
+## Features
 
-### 🚀 Whats included
+* Generates passwords with a user-defined length (4-28 characters).
+* Allows inclusion/exclusion of:
+    * Uppercase letters (A-Z)
+    * Lowercase letters (a-z)
+    * Numbers (0-9)
+    * Symbols (!@#$%^&*)
+* Option to exclude specific user-defined characters.
+* Option to avoid ambiguous characters (e.g., 0, O, 1, I, l).
+* Option to require that the generated password includes at least one character from each selected type.
+* Displays a real-time password strength indicator.
+* Provides a one-click copy-to-clipboard button for the generated password.
+* Runs as a tray application for easy access.
 
-- Adjustable password length (4–28 characters)
-- Real-time strength meter with detailed feedback
-- Copy-to-clipboard with animated confirmation
-- Character type toggles (uppercase, lowercase, numbers, symbols)
-- Exclude specific characters or ambiguous ones (`0O1Il|`)
-- “Require all selected types” toggle for strict control
-- Electron-wrapped desktop app (Windows build ready)
+## Technologies Used
 
----
+* HTML
+* CSS
+* JavaScript
+* Electron
+* Node.js
 
-### 🛠 Built With
+## Getting Started
 
-- **HTML/CSS/JavaScript** (Vanilla)
-- **Electron** for local desktop app packaging  
-- FontAwesome for UI icons  
-- Google Fonts (Poppins) for styling
+### Prerequisites
 
----
+* Node.js and npm installed. Download from [nodejs.org](https://nodejs.org/).
 
-### 📦 Getting Started
+### Running Locally
 
-#### 💻 Run as a Web App
+1.  Clone the repository:
+    ```bash
+    git clone [https://github.com/polskapeeps/PassLock.git](https://github.com/polskapeeps/PassLock.git)
+    ```
+2.  Navigate to the project directory:
+    ```bash
+    cd PassLock-Electron-DesktopApp
+    ```
+3.  Install dependencies:
+    ```bash
+    npm install
+    ```
+4.  Start the application:
+    ```bash
+    npm start
+    ```
 
-No setup required — just open `index.html` in your browser and go!
+### Building for Distribution
 
-#### 🪟 Run Electron App (Desktop)
+The application can be packaged for Windows and macOS using Electron Builder.
 
-Make sure you have [Node.js](https://nodejs.org/) installed.
+* **To build for Windows:**
+    ```bash
+    npm run dist:win
+    ```
+* **To build for macOS:**
+    ```bash
+    npm run dist:mac
+    ```
+    The distributable files will be located in the `dist/` directory.
 
-```bash
-# Clone the repo
-git clone https://github.com/polskapeeps/PassLock
+## Project Structure
 
-# Navigate to project folder
-cd '/path/to/directory/PassLock'
+````
 
-# Install dependencies
-npm install
+PassLock-Electron-DesktopApp/
+├── src/
+│   ├── app/
+│   │   ├── main.js         \# Main Electron process, window creation
+│   │   └── tray.js         \# System tray icon and context menu logic
+│   └── renderer/
+│       ├── index.html      \# Main HTML file for the UI
+│       ├── script.js       \# Frontend logic, password generation
+│       └── style.css       \# Application styles
+├── assets/
+│   └── icons/              \# Application icons (e.g., .ico, .png)
+├── build/
+│   ├── icon.icns           \# macOS application icon
+│   └── background.png      \# Background image for macOS DMG installer
+├── package.json            \# Project metadata, dependencies, and build scripts
+└── README.md               \# This README file
 
-# Start the app in Electron
-npm start
 ```
 
-#### 🛠 Build for Distribution
+## License
 
-```bash
-npm run dist
+This project is licensed under the MIT License. See the [repository](https://github.com/polskapeeps/PassLock) for more details.
 ```
-
-This creates a Windows installer in the `/dist` folder using Electron Builder.
-
----
-
-### 🧩 Planned Enhancements
-
-- Linux/macOS builds
-- Browser extensions
-- Password history or export feature
-- Dark/light theme toggle
-- Improved mobile responsiveness
-- General UI changes
-
----
-
-### 📁 Project Structure
-
-```bash
-├── index.html         # Web app interface
-├── style.css          # Clean dark-themed styles
-├── script.js          # Password generation + logic
-├── main.js            # Electron app entry
-├── package.json       # App metadata and build configs
-└── build/             # (Optional) App icons for builds
-```
-
----
-
-### ⚖ License
-
-MIT — use it freely, tweak it, or build on it.  
-Attribution appreciated, but not required.
-
----
-
-### 📬 Feedback or Contributions?
-
-This was built for fun and personal use — but if you find it useful or want to help expand it, feel free to fork or submit ideas!
-
-GitHub: [polskapeeps/PassLock](https://github.com/polskapeeps/PassLock)
-
----
