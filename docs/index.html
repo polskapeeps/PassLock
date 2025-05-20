@@ -26,7 +26,12 @@
 
   <body>
     <div class="container">
-      <h1>Generate Password</h1>
+      <div class="main-header">
+        <h1>Generate Password</h1>
+        <button id="settingsButton" title="Settings">
+          <i class="fas fa-cog"></i>
+        </button>
+      </div>
 
       <div class="password-display-container">
         <input
@@ -45,54 +50,63 @@
       </div>
       <div id="strength-text" class="strength-text">Password Strength:</div>
 
-      <div id="copyMessage" class="copy-message">Copied to clipboard</div>
+      <div id="copyMessage" class="copy-message">Copied to clipboard!</div>
 
-      <div class="options">
+      <div class="options-main">
         <div class="option">
           <label for="lengthSlider"
             >Password Length: <span id="lengthValue">16</span></label
           >
-          <input type="range" id="lengthSlider" min="4" max="28" value="16" />
+          <input type="range" id="lengthSlider" min="4" max="32" value="16" />
         </div>
 
+        <div class="option character-type-options">
+          <button
+            id="toggleUppercase"
+            class="char-type-btn active"
+            title="Include Uppercase (A-Z)"
+          >
+            Aa
+          </button>
+          <button
+            id="toggleLowercase"
+            class="char-type-btn active"
+            title="Include Lowercase (a-z)"
+          >
+            aa
+          </button>
+          <button
+            id="toggleNumbers"
+            class="char-type-btn active"
+            title="Include Numbers (0-9)"
+          >
+            123
+          </button>
+          <button
+            id="toggleSymbols"
+            class="char-type-btn"
+            title="Include Symbols (!@#)"
+          >
+            #%
+          </button>
+        </div>
+      </div>
+
+      <div id="settingsPanel" class="settings-panel hidden">
+        <h2>Advanced Settings</h2>
         <div class="option">
           <label for="excludeChars">Exclude Characters:</label>
-          <input
-            type="text"
-            id="excludeChars"
-            placeholder="e.g. ${/}...<1337>"
-          />
+          <input type="text" id="excludeChars" placeholder="e.g. ${/}..." />
         </div>
-
-        <div class="option checkbox-option">
-          <input type="checkbox" id="includeUppercase" checked />
-          <label for="includeUppercase">Include Uppercase (A-Z)</label>
-        </div>
-
-        <div class="option checkbox-option">
-          <input type="checkbox" id="includeLowercase" checked />
-          <label for="includeLowercase">Include Lowercase (a-z)</label>
-        </div>
-
-        <div class="option checkbox-option">
-          <input type="checkbox" id="includeNumbers" checked />
-          <label for="includeNumbers">Include Numbers (0-9)</label>
-        </div>
-
-        <div class="option checkbox-option">
-          <input type="checkbox" id="includeSymbols" checked />
-          <label for="includeSymbols">Include Symbols (!@#$%^&*)</label>
-        </div>
-
-        <div class="option checkbox-option">
-          <input type="checkbox" id="requireAllTypes" checked />
-          <label for="requireAllTypes">Require All Selected Types</label>
-        </div>
-
         <div class="option checkbox-option">
           <input type="checkbox" id="avoidAmbiguous" checked />
           <label for="avoidAmbiguous">Avoid Ambiguous (0O1Il|)</label>
         </div>
+        <div class="option checkbox-option">
+          <input type="checkbox" id="requireAllTypes" checked />
+          <label for="requireAllTypes">Require All Selected Types</label>
+        </div>
+        <button id="closeSettingsButton" class="settings-button">Close</button>
       </div>
 
       <button id="generateButton">Generate Password</button>
