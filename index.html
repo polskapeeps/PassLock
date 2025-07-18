@@ -11,6 +11,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   </head>
 
   <body>
@@ -26,6 +27,9 @@
         />
         <button id="copyButton" title="Copy to Clipboard">
           <i class="far fa-copy"></i>
+        </button>
+        <button id="saveButton" title="Save Password">
+          <i class="far fa-save"></i>
         </button>
       </div>
       
@@ -81,10 +85,21 @@
         
       </div>
 
-      <button id="generateButton">Generate Password</button>
-      <div id="error-message" class="error-message"></div>
-    </div>
+        <button id="generateButton">Generate Password</button>
+        <button id="viewSavedButton">Saved Passwords</button>
+        <div id="error-message" class="error-message"></div>
+      </div>
 
-    <script src="script.js"></script>
-  </body>
-</html>
+      <div id="savedPasswordsContainer" class="saved-passwords hidden"></div>
+      <div id="authOverlay" class="auth-overlay hidden">
+        <div class="auth-dialog">
+          <div id="authMessage" class="auth-message"></div>
+          <input type="password" id="authInput" placeholder="Master Password" />
+          <input type="password" id="authConfirm" placeholder="Confirm Password" class="hidden" />
+          <button id="authSubmit">Submit</button>
+        </div>
+      </div>
+
+      <script src="script.js"></script>
+    </body>
+  </html>
