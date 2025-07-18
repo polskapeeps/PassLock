@@ -1,6 +1,7 @@
 // DOM Elements
 const passwordDisplay = document.getElementById("passwordDisplay");
 const copyButton = document.getElementById("copyButton");
+const saveButton = document.getElementById("saveButton");
 const lengthSlider = document.getElementById("lengthSlider");
 const lengthValueSpan = document.getElementById("lengthValue");
 const includeUppercase = document.getElementById("includeUppercase");
@@ -11,15 +12,25 @@ const excludeChars = document.getElementById("excludeChars");
 const avoidAmbiguous = document.getElementById("avoidAmbiguous");
 const requireAllTypes = document.getElementById("requireAllTypes");
 const generateButton = document.getElementById("generateButton");
+const viewSavedButton = document.getElementById("viewSavedButton");
 const copyMessage = document.getElementById("copyMessage");
 const errorMessage = document.getElementById("error-message");
 const strengthMeter = document.getElementById("strength-meter");
 const strengthMeterBar = document.querySelector(".strength-meter-bar");
 const strengthText = document.getElementById("strength-text");
+const savedPasswordsContainer = document.getElementById("savedPasswordsContainer");
+const authOverlay = document.getElementById("authOverlay");
+const authMessage = document.getElementById("authMessage");
+const authInput = document.getElementById("authInput");
+const authConfirm = document.getElementById("authConfirm");
+const authSubmit = document.getElementById("authSubmit");
 const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
 const numberChars = "0123456789";
 const symbolChars = "!@#$%^&*()_+[]{}|;:,.<>?";
+
+let masterPassword = null;
+let storedData = null;
 
 // --- Improved random char gen ---
 function getSecureRandomChar(characterString) {
@@ -226,10 +237,107 @@ function copyToClipboard() {
   }
 }
 
+function loadStoredData() {
+  const raw = localStorage.getItem('passlockData');
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return { passwords: [] };
+  }
+}
+
+function saveStoredData() {
+  if (storedData) {
+    localStorage.setItem('passlockData', JSON.stringify(storedData));
+  }
+}
+
+function showAuthOverlay(setup) {
+  authConfirm.classList.toggle('hidden', !setup);
+  authMessage.textContent = setup ? 'Set Master Password' : 'Enter Master Password';
+  authOverlay.classList.remove('hidden');
+}
+
+function handleAuthSubmit() {
+  const pass = authInput.value;
+  if (!pass) return;
+
+  if (!storedData) {
+    if (pass !== authConfirm.value) {
+      authMessage.textContent = 'Passwords do not match';
+      return;
+    }
+    storedData = { masterHash: CryptoJS.SHA256(pass).toString(), passwords: [] };
+    saveStoredData();
+    masterPassword = pass;
+    authOverlay.classList.add('hidden');
+    authInput.value = '';
+    authConfirm.value = '';
+  } else if (!masterPassword) {
+    const hash = CryptoJS.SHA256(pass).toString();
+    if (hash === storedData.masterHash) {
+      masterPassword = pass;
+      authOverlay.classList.add('hidden');
+      authInput.value = '';
+    } else {
+      authMessage.textContent = 'Incorrect password';
+    }
+  }
+}
+
+function ensureUnlocked() {
+  if (masterPassword) return true;
+  showAuthOverlay(!storedData);
+  return false;
+}
+
+function saveCurrentPassword() {
+  if (!passwordDisplay.value) return;
+  if (!ensureUnlocked()) return;
+  const label = prompt('Label for this password:');
+  if (!label) return;
+  const encrypted = CryptoJS.AES.encrypt(passwordDisplay.value, masterPassword).toString();
+  storedData.passwords.push({ label, value: encrypted });
+  saveStoredData();
+  updateSavedList();
+}
+
+function updateSavedList() {
+  if (!storedData || !masterPassword) return;
+  savedPasswordsContainer.innerHTML = '';
+  storedData.passwords.forEach((entry) => {
+    const div = document.createElement('div');
+    div.className = 'saved-entry';
+    const span = document.createElement('span');
+    span.textContent = entry.label;
+    const btn = document.createElement('button');
+    btn.textContent = 'Copy';
+    btn.addEventListener('click', () => {
+      const decrypted = CryptoJS.AES.decrypt(entry.value, masterPassword).toString(CryptoJS.enc.Utf8);
+      navigator.clipboard.writeText(decrypted);
+    });
+    div.appendChild(span);
+    div.appendChild(btn);
+    savedPasswordsContainer.appendChild(div);
+  });
+}
+
 // --- Event Listeners ---
 generateButton.addEventListener("click", generatePassword);
 lengthSlider.addEventListener("input", updateLengthValue);
 copyButton.addEventListener("click", copyToClipboard);
 
+saveButton.addEventListener("click", saveCurrentPassword);
+viewSavedButton.addEventListener("click", () => {
+  if (!ensureUnlocked()) return;
+  savedPasswordsContainer.classList.toggle('hidden');
+  if (!savedPasswordsContainer.classList.contains('hidden')) {
+    updateSavedList();
+  }
+});
+authSubmit.addEventListener("click", handleAuthSubmit);
+
 // --- Initialization ---
-updateLengthValue(); // Set initial length value
+storedData = loadStoredData();
+updateLengthValue();
