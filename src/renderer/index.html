@@ -1,104 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PassLock</title>
-    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png" />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="assets/icons/favicon-16x16.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="assets/icons/favicon-32x32.png"
-    />
-    <link rel="stylesheet" href="./style.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    />
-  </head>
-
-  <body>
-    <div class="container">
-      <h1>Generate Password</h1>
-
-      <div class="password-display-container">
-        <input
-          type="text"
-          id="passwordDisplay"
-          placeholder="Your Password Here"
-          readonly
-        />
-        <button id="copyButton" title="Copy to Clipboard">
-          <i class="far fa-copy"></i>
-        </button>
-      </div>
-
-      <div id="strength-meter" class="strength-meter">
-        <div class="strength-meter-bar"></div>
-      </div>
-      <div id="strength-text" class="strength-text">Password Strength:</div>
-
-      <div id="copyMessage" class="copy-message">Copied to clipboard</div>
-
-      <div class="options">
-        <div class="option">
-          <label for="lengthSlider"
-            >Password Length: <span id="lengthValue">16</span></label
-          >
-          <input type="range" id="lengthSlider" min="4" max="28" value="16" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PassLock v2 - Secure Password Manager</title>
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-box">
+            <div class="login-logo">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h2 class="login-title">PassLock Secure</h2>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label>Master Password</label>
+                    <input type="password" id="masterPassword" required autocomplete="current-password">
+                </div>
+                <div class="login-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-lock-open"></i> Unlock Vault
+                    </button>
+                    <button type="button" class="btn btn-ghost" id="newVaultBtn">
+                        Create New Vault
+                    </button>
+                </div>
+            </form>
         </div>
-
-        <div class="option">
-          <label for="excludeChars">Exclude Characters:</label>
-          <input
-            type="text"
-            id="excludeChars"
-            placeholder="e.g. ${/}...<1337>"
-          />
-        </div>
-
-        <div class="option checkbox-option">
-          <input type="checkbox" id="includeUppercase" checked />
-          <label for="includeUppercase">Include Uppercase (A-Z)</label>
-        </div>
-
-        <div class="option checkbox-option">
-          <input type="checkbox" id="includeLowercase" checked />
-          <label for="includeLowercase">Include Lowercase (a-z)</label>
-        </div>
-
-        <div class="option checkbox-option">
-          <input type="checkbox" id="includeNumbers" checked />
-          <label for="includeNumbers">Include Numbers (0-9)</label>
-        </div>
-
-        <div class="option checkbox-option">
-          <input type="checkbox" id="includeSymbols" checked/>
-          <label for="includeSymbols">Include Symbols (!@#$%^&*)</label>
-        </div>
-
-        <div class="option checkbox-option">
-          <input type="checkbox" id="requireAllTypes" checked/>
-          <label for="requireAllTypes">Require All Selected Types</label>
-        </div>
-
-        <div class="option checkbox-option">
-          <input type="checkbox" id="avoidAmbiguous" checked/>
-          <label for="avoidAmbiguous">Avoid Ambiguous (0O1Il|)</label>
-        </div>
-      </div>
-
-      <button id="generateButton">Generate Password</button>
-      <div id="error-message" class="error-message"></div>
     </div>
 
+    <!-- Main App -->
+    <div id="app" class="app" style="display: none;">
+        <nav class="sidebar">
+            <button class="nav-btn active" data-view="generator" title="Generator">
+                <i class="fas fa-key"></i>
+            </button>
+            <button class="nav-btn" data-view="vault" title="Vault">
+                <i class="fas fa-lock"></i>
+            </button>
+            <button class="nav-btn" data-view="settings" title="Settings">
+                <i class="fas fa-cog"></i>
+            </button>
+            <div style="flex: 1;"></div>
+            <button class="nav-btn" id="lockBtn" title="Lock">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </nav>
+
+        <div class="main">
+            <header class="header">
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search passwords...">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-ghost btn-icon" id="importBtn" title="Import">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="btn btn-ghost btn-icon" id="exportBtn" title="Export">
+                        <i class="fas fa-upload"></i>
+                    </button>
+                    <button class="btn btn-primary" id="addBtn">
+                        <i class="fas fa-plus"></i> Add Password
+                    </button>
+                </div>
+            </header>
+
+            <div class="content">
+                <!-- Generator View -->
+                <div id="generator" class="view generator">
+                    <div class="password-output">
+                        <div class="password-field">
+                            <input type="text" id="passwordDisplay" readonly placeholder="Generated password">
+                            <button class="btn btn-ghost btn-icon" id="copyBtn" title="Copy">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <button class="btn btn-ghost btn-icon" id="regenerateBtn" title="Regenerate">
+                                <i class="fas fa-sync"></i>
+                            </button>
+                        </div>
+                        <div class="strength-bar">
+                            <div class="strength-fill" data-strength="0"></div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                            <span id="strengthText" style="color: var(--text-dim);">No password</span>
+                            <span id="entropyText" style="color: var(--text-dim);">0 bits</span>
+                        </div>
+                    </div>
+
+                    <div class="controls">
+                        <div class="control-group">
+                            <label class="control-label">Length</label>
+                            <div class="slider-group">
+                                <input type="range" id="lengthSlider" min="8" max="64" value="20">
+                                <span class="slider-value" id="lengthValue">20</span>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">Characters</label>
+                            <div class="checkbox-grid">
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="uppercase" checked>
+                                    <label for="uppercase">Uppercase</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="lowercase" checked>
+                                    <label for="lowercase">Lowercase</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="numbers" checked>
+                                    <label for="numbers">Numbers</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="symbols" checked>
+                                    <label for="symbols">Symbols</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">Options</label>
+                            <div class="checkbox-grid">
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="avoidSimilar">
+                                    <label for="avoidSimilar">Avoid Similar</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="requireAll">
+                                    <label for="requireAll">Require All Types</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" id="generateBtn" style="width: 100%;">
+                            <i class="fas fa-magic"></i> Generate Password
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Vault View -->
+                <div id="vault" class="view" style="display: none;">
+                    <div class="vault-header">
+                        <h2>Password Vault</h2>
+                        <span id="vaultCount" style="color: var(--text-dim);"></span>
+                    </div>
+                    <div id="passwordGrid" class="password-grid"></div>
+                </div>
+
+                <!-- Settings View -->
+                <div id="settings" class="view" style="display: none;">
+                    <h2>Settings</h2>
+                    <div class="controls" style="margin-top: 20px;">
+                        <div class="control-group">
+                            <label class="control-label">Security</label>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="autoLock" checked>
+                                <label for="autoLock">Auto-lock after 5 minutes</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="clipboardClear" checked>
+                                <label for="clipboardClear">Clear clipboard after 30 seconds</label>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <button class="btn btn-ghost" id="changeMasterBtn">
+                                <i class="fas fa-key"></i> Change Master Password
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add Password</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="passwordForm">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="pTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>Username/Email</label>
+                    <input type="text" id="pUsername" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="pPassword" required>
+                </div>
+                <div class="form-group">
+                    <label>URL</label>
+                    <input type="url" id="pUrl">
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="pNotes"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-ghost modal-cancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check"></i>
+        <span id="toastText">Action completed</span>
+    </div>
+
+    <!-- Crypto-JS for encryption (include in production) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    <!-- Tauri API for future migration -->
+    <script src="https://unpkg.com/@tauri-apps/api@latest/dist/tauri.min.js"></script>
     <script src="./script.js"></script>
-  </body>
+</body>
 </html>
