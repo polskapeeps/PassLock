@@ -12,6 +12,8 @@ const avoidAmbiguous = document.getElementById("avoidAmbiguous");
 const requireAllTypes = document.getElementById("requireAllTypes");
 const generateButton = document.getElementById("generateButton");
 const copyMessage = document.getElementById("copyMessage");
+const labelInput = document.getElementById("labelInput");
+const saveButton = document.getElementById("saveButton");
 const errorMessage = document.getElementById("error-message");
 const strengthMeter = document.getElementById("strength-meter");
 const strengthMeterBar = document.querySelector(".strength-meter-bar");
@@ -219,10 +221,28 @@ function updateLengthValue() {
 function copyToClipboard() {
   if (passwordDisplay.value) {
     navigator.clipboard.writeText(passwordDisplay.value);
+    copyMessage.textContent = "Copied to clipboard";
     copyMessage.classList.add("show");
     setTimeout(() => {
-      copyMessage.classList.remove("show"); // remove if potentially
-    }, 10000); // Message disappears after 3 seconds
+      copyMessage.classList.remove("show");
+    }, 3000);
+  }
+}
+
+async function savePassword() {
+  if (!passwordDisplay.value) return;
+  try {
+    await window.__TAURI__.invoke("save_password", {
+      label: labelInput.value || "Unnamed",
+      password: passwordDisplay.value,
+    });
+    copyMessage.textContent = "Password saved";
+    copyMessage.classList.add("show");
+    setTimeout(() => {
+      copyMessage.classList.remove("show");
+    }, 3000);
+  } catch (error) {
+    console.error("Failed to save password:", error);
   }
 }
 
@@ -230,6 +250,7 @@ function copyToClipboard() {
 generateButton.addEventListener("click", generatePassword);
 lengthSlider.addEventListener("input", updateLengthValue);
 copyButton.addEventListener("click", copyToClipboard);
+saveButton.addEventListener("click", savePassword);
 
 // --- Initialization ---
 updateLengthValue(); // Set initial length value

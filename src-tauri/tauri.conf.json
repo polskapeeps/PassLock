@@ -1,0 +1,23 @@
+{
+  "package": {
+    "productName": "PassLock",
+    "version": "0.1.0"
+  },
+  "build": {
+    "distDir": "../",
+    "devPath": "../index.html"
+  },
+  "tauri": {
+    "allowlist": {
+      "fs": {
+        "scope": ["$APP/*"]
+      },
+      "path": {
+        "all": true
+      }
+    },
+    "security": {
+      "csp": null
+    }
+  }
+}

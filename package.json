@@ -1,77 +1,12 @@
 {
   "name": "passlock",
-  "version": "1.0.1",
-  "description": "A simple password generator with custom options. Designed to be used in a pinch when needed. Features to be added ",
-  "main": "main.js",
+  "version": "2.0.0",
+  "description": "Secure password generator and manager built with Tauri.",
   "scripts": {
-    "start": "electron .",
-    "dist": "electron-builder",
-    "dist:mac": "electron-builder --mac",
-    "dist:win": "electron-builder --win"
+    "dev": "tauri dev",
+    "build": "tauri build"
   },
-  "build": {
-    "appId": "com.polskapeeps.passlock",
-    "productName": "PassLock",
-    "files": [
-      "index.html",
-      "main.js",
-      "script.js",
-      "style.css",
-      "tray.js",
-      "build/icon.ico",
-      "build/icon.icns"
-    ],
-    "win": {
-      "icon": "build/icon.ico",
-      "target": "nsis"
-    },
-    "mac": {
-      "icon": "build/icon.icns",
-      "category": "public.app-category.utilities",
-      "target": [
-        "dmg",
-        "zip"
-      ],
-      "darkModeSupport": true
-    },
-    "dmg": {
-      "background": "build/background.png",
-      "icon": "build/icon.icns",
-      "iconSize": 100,
-      "window": {
-        "width": 380,
-        "height": 600
-      },
-      "contents": [
-        {
-          "x": 130,
-          "y": 220
-        },
-        {
-          "x": 410,
-          "y": 220,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
-    }
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/polskapeeps/PassLock.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/polskapeeps/PassLock/issues"
-  },
-  "homepage": "https://github.com/polskapeeps/PassLock#readme",
   "devDependencies": {
-    "electron": "^35.1.4",
-    "electron-builder": "^26.0.12"
-  },
-  "dependencies": {
-    "secure-random-password": "^0.2.3"
+    "@tauri-apps/cli": "^1.5.8"
   }
 }

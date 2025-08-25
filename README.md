@@ -1,9 +1,9 @@
  # 🔑 *PassLock* 🔑
  ---
 
-###### A very minimalastic password generator built for myself, wanting to avoid opening up a password manager for the same result. Ended up being a whole thing. Well, here it is!
+###### A minimalistic password generator now paired with a lightweight manager. Built with Tauri for improved security and native performance.
 
-###### Intended as just a personal use project, feedback is always welcome as im not entirely knowledgable in the field as of this writing.
+###### Intended as a personal-use project. Feedback is always welcome!
  
 ---
 
@@ -15,14 +15,15 @@
 - Character type toggles (uppercase, lowercase, numbers, symbols)
 - Exclude specific characters or ambiguous ones (`0O1Il|`)
 - “Require all selected types” toggle for strict control
-- Electron-wrapped desktop app (Windows build ready)
+- Securely save generated passwords to local encrypted storage
+- Tauri-powered desktop app
 
 ---
 
 ### 🛠 Built With
 
 - **HTML/CSS/JavaScript** (Vanilla)
-- **Electron** for local desktop app packaging  
+- **Tauri** for desktop application framework
 - FontAwesome for UI icons  
 - Google Fonts (Poppins) for styling
 
@@ -34,9 +35,9 @@
 
 No setup required — just open `index.html` in your browser and go!
 
-#### 🪟 Run Electron App (Desktop)
+#### 🦀 Run Tauri App (Desktop)
 
-Make sure you have [Node.js](https://nodejs.org/) installed.
+Make sure you have [Node.js](https://nodejs.org/) and the Rust toolchain installed.
 
 ```bash
 # Clone the repo
@@ -45,20 +46,12 @@ git clone https://github.com/polskapeeps/PassLock
 # Navigate to project folder
 cd '/path/to/directory/PassLock'
 
-# Install dependencies
+# Install CLI dependency
 npm install
 
-# Start the app in Electron
-npm start
+# Start the app
+npm run dev
 ```
-
-#### 🛠 Build for Distribution
-
-```bash
-npm run dist
-```
-
-This creates a Windows installer in the `/dist` folder using Electron Builder.
 
 ---
 
@@ -79,8 +72,8 @@ This creates a Windows installer in the `/dist` folder using Electron Builder.
 ├── index.html         # Web app interface
 ├── style.css          # Clean dark-themed styles
 ├── script.js          # Password generation + logic
-├── main.js            # Electron app entry
-├── package.json       # App metadata and build configs
+├── package.json       # App metadata and Tauri scripts
+├── src-tauri/         # Tauri backend
 └── build/             # (Optional) App icons for builds
 ```
 

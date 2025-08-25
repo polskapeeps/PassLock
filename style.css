@@ -109,6 +109,41 @@ h1 {
   box-shadow: 0 0 8px var(--primary-hover);
 }
 
+#labelInput {
+  flex-grow: 1;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  border-radius: 60px 2px 60px 2px;
+  outline: none;
+  font-family: "Courier New", Courier, monospace;
+}
+
+#labelInput::placeholder {
+  color: var(--text-muted);
+}
+
+#saveButton {
+  padding: 5px 12px;
+  background-color: var(--primary-color);
+  color: var(--bg-color);
+  border: none;
+  border-left: 3px solid var(--bg-color);
+  border-right: 4px solid var(--bg-color);
+  border-radius: 2px 50px 2px 30px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background-color 0.5s ease;
+  margin-left: 5px;
+}
+
+#saveButton:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 0 8px var(--primary-hover);
+}
+
 .copy-message {
   color: var(--success-color);
   font-size: 0.7em;
