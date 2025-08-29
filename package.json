@@ -1,29 +1,25 @@
 {
   "name": "passlock",
   "version": "1.1.0",
-  "description": "A simple password generator with custom options. Designed to be used in a pinch when needed.",
+  "description": "A secure password generator and manager",
   "main": "src/app/main.js",
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder",
     "dist:mac": "electron-builder --mac",
-    "dist:win": "electron-builder --win",
-    "tauri": "tauri",
-    "tauri:dev": "tauri dev",
-    "tauri:build": "tauri build"
+    "dist:win": "electron-builder --win"
   },
   "build": {
     "appId": "com.polskapeeps.passlock",
     "productName": "PassLock",
     "files": [
-      "src/app/main.js",
-      "src/app/tray.js",
-      "src/renderer/index.html",
-      "src/renderer/script.js",
-      "src/renderer/style.css",
-      "assets/icons/favicon.ico",
-      "build/icon.icns"
+      "src/**/*",
+      "assets/**/*",
+      "build/**/*"
     ],
+    "directories": {
+      "output": "dist"
+    },
     "win": {
       "icon": "assets/icons/favicon.ico",
       "target": "nsis"
@@ -42,29 +38,22 @@
       "icon": "build/icon.icns",
       "iconSize": 100,
       "window": {
-        "width": 380,
-        "height": 600
-      },
-      "contents": [
-        {
-          "x": 130,
-          "y": 220
-        },
-        {
-          "x": 410,
-          "y": 220,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
+        "width": 540,
+        "height": 380
+      }
     }
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/polskapeeps/PassLock.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "password",
+    "generator",
+    "security",
+    "electron"
+  ],
+  "author": "polskapeeps",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/polskapeeps/PassLock/issues"
@@ -72,11 +61,9 @@
   "homepage": "https://github.com/polskapeeps/PassLock#readme",
   "devDependencies": {
     "electron": "^35.1.4",
-    "electron-builder": "^26.0.12",
-    "@tauri-apps/cli": "^1.5.4"
+    "electron-builder": "^26.0.12"
   },
   "dependencies": {
-    "secure-random-password": "^0.2.3",
-    "@tauri-apps/api": "^1.5.4"
+    "secure-random-password": "^0.2.3"
   }
 }
