@@ -1,7 +1,7 @@
  # 🔑 *PassLock* 🔑
  ---
 
-###### A very minimalastic password generator built for myself, wanting to avoid opening up a password manager for the same result. Ended up being a whole thing. Well, here it is!
+###### A minimal password manager and generator built for myself, wanting quick access without launching a full-fledged manager. Ended up being a whole thing. Well, here it is!
 
 ###### Intended as just a personal use project, feedback is always welcome as im not entirely knowledgable in the field as of this writing.
  
@@ -15,6 +15,7 @@
 - Character type toggles (uppercase, lowercase, numbers, symbols)
 - Exclude specific characters or ambiguous ones (`0O1Il|`)
 - “Require all selected types” toggle for strict control
+- Built-in password vault to save, search, edit, and delete entries
 - Electron-wrapped desktop app (Windows build ready)
 
 ---
@@ -78,7 +79,7 @@ This creates a Windows installer in the `/dist` folder using Electron Builder.
 ```bash
 ├── index.html         # Web app interface
 ├── style.css          # Clean dark-themed styles
-├── script.js          # Password generation + logic
+├── script.js          # Password generation and vault logic
 ├── main.js            # Electron app entry
 ├── package.json       # App metadata and build configs
 └── build/             # (Optional) App icons for builds
