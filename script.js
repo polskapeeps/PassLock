@@ -4,6 +4,8 @@ class PasswordManager {
     this.passwords = this.loadPasswords();
     this.currentPassword = '';
     this.editingId = null;
+    this.masterPasswordHash = localStorage.getItem('masterPasswordHash');
+    this.isVaultUnlocked = false;
     this.init();
   }
 
@@ -104,6 +106,36 @@ class PasswordManager {
     const array = new Uint32Array(1);
     crypto.getRandomValues(array);
     return str[array[0] % str.length];
+  }
+
+  async hashPassword(password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async verifyMasterPassword(password) {
+    const hash = await this.hashPassword(password);
+    return hash === this.masterPasswordHash;
+  }
+
+  promptMasterPassword() {
+    const hasPassword = !!this.masterPasswordHash;
+    document.getElementById('masterPasswordModalTitle').textContent = hasPassword ? 'Enter Master Password' : 'Set Master Password';
+    document.getElementById('masterPasswordSubmit').textContent = hasPassword ? 'Unlock' : 'Set Password';
+    document.getElementById('confirmMasterPasswordGroup').style.display = hasPassword ? 'none' : 'block';
+    document.getElementById('masterPasswordInput').value = '';
+    document.getElementById('confirmMasterPassword').value = '';
+    this.openModal('masterPasswordModal');
+  }
+
+  switchTab(tabId) {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+    document.getElementById(tabId).classList.add('active');
   }
 
   calculateStrength(password) {
@@ -315,12 +347,12 @@ Created: ${new Date(password.createdAt).toLocaleString()}
     // Tab navigation
     document.querySelectorAll('.nav-tab').forEach(tab => {
       tab.addEventListener('click', () => {
-        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-        tab.classList.add('active');
         const tabId = tab.dataset.tab;
-        document.getElementById(tabId).classList.add('active');
+        if (tabId === 'vault' && !this.isVaultUnlocked) {
+          this.promptMasterPassword();
+          return;
+        }
+        this.switchTab(tabId);
       });
     });
 
@@ -369,6 +401,13 @@ Created: ${new Date(password.createdAt).toLocaleString()}
       this.openModal('saveModal');
     });
 
+    // Lock vault button
+    document.getElementById('lockVaultBtn').addEventListener('click', () => {
+      this.isVaultUnlocked = false;
+      this.switchTab('generator');
+      this.showToast('Vault locked', 'info');
+    });
+
     // Save form
     document.getElementById('saveForm').addEventListener('submit', (e) => {
       e.preventDefault();
@@ -399,6 +438,35 @@ Created: ${new Date(password.createdAt).toLocaleString()}
     document.getElementById('searchInput').addEventListener('input', (e) => {
       const results = this.searchPasswords(e.target.value);
       this.renderPasswords(results);
+    });
+
+    // Master password form
+    document.getElementById('masterPasswordForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const password = document.getElementById('masterPasswordInput').value;
+      if (!this.masterPasswordHash) {
+        const confirm = document.getElementById('confirmMasterPassword').value;
+        if (password !== confirm) {
+          this.showToast('Passwords do not match', 'error');
+          return;
+        }
+        this.masterPasswordHash = await this.hashPassword(password);
+        localStorage.setItem('masterPasswordHash', this.masterPasswordHash);
+        this.isVaultUnlocked = true;
+        this.closeModal('masterPasswordModal');
+        this.switchTab('vault');
+        this.showToast('Master password set', 'success');
+      } else {
+        const valid = await this.verifyMasterPassword(password);
+        if (valid) {
+          this.isVaultUnlocked = true;
+          this.closeModal('masterPasswordModal');
+          this.switchTab('vault');
+          this.showToast('Vault unlocked', 'success');
+        } else {
+          this.showToast('Incorrect master password', 'error');
+        }
+      }
     });
 
     // Modal controls
