@@ -1,235 +1,437 @@
-// DOM Elements
-const passwordDisplay = document.getElementById("passwordDisplay");
-const copyButton = document.getElementById("copyButton");
-const lengthSlider = document.getElementById("lengthSlider");
-const lengthValueSpan = document.getElementById("lengthValue");
-const includeUppercase = document.getElementById("includeUppercase");
-const includeLowercase = document.getElementById("includeLowercase");
-const includeNumbers = document.getElementById("includeNumbers");
-const includeSymbols = document.getElementById("includeSymbols");
-const excludeChars = document.getElementById("excludeChars");
-const avoidAmbiguous = document.getElementById("avoidAmbiguous");
-const requireAllTypes = document.getElementById("requireAllTypes");
-const generateButton = document.getElementById("generateButton");
-const copyMessage = document.getElementById("copyMessage");
-const errorMessage = document.getElementById("error-message");
-const strengthMeter = document.getElementById("strength-meter");
-const strengthMeterBar = document.querySelector(".strength-meter-bar");
-const strengthText = document.getElementById("strength-text");
-const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
-const numberChars = "0123456789";
-const symbolChars = "!@#$%^&*()_+[]{}|;:,.<>?";
-
-// --- Improved random char gen ---
-function getSecureRandomChar(characterString) {
-  const randomBuffer = new Uint32Array(1);
-  window.crypto.getRandomValues(randomBuffer);
-  const randomIndex = randomBuffer[0] % characterString.length;
-  return characterString[randomIndex];
-}
-
-// --- Password Strength --
-function calculatePasswordStrength(password) {
-  let score = 0;
-
-  if (password.length < 1) return { score: 0, text: "Too Short" };
-
-  score += Math.min(40, password.length * 2);
-
-  // Check character variety
-  const hasLower = /[a-z]/.test(password);
-  const hasUpper = /[A-Z]/.test(password);
-  const hasNumber = /\d/.test(password);
-  const hasSymbol = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
-
-  // Points for variety
-  const charVariety = [hasLower, hasUpper, hasNumber, hasSymbol]
-    .filter(Boolean).length;
-  score += charVariety * 10;
-
-  // Points for good distribution of character types
-  const lowerRatio = password.replace(/[^a-z]/g, '').length / password.length;
-  const upperRatio = password.replace(/[^A-Z]/g, '').length / password.length;
-  const numberRatio = password.replace(/[^\d]/g, '').length / password.length;
-  const symbolRatio = password.replace(/[a-zA-Z0-9]/g, '').length / password.length;
-
-  // Calculate distribution score -- closer to even better --
-  const idealRatio = 1 / Math.max(1, charVariety);
-  const ratioScore = 20 * (1 - Math.max(
-    Math.abs(lowerRatio - idealRatio),
-    Math.abs(upperRatio - idealRatio),
-    Math.abs(numberRatio - idealRatio),
-    Math.abs(symbolRatio - idealRatio)
-  ) / idealRatio);
-
-  score += ratioScore;
-
-  //  Determine strength category
-  let strengthText = '';
-  if (score < 20) strengthText = 'Very Weak';
-  else if (score < 40) strengthText = 'Weak';
-  else if (score < 60) strengthText = 'Medium';
-  else if (score < 80) strengthText = 'Strong';
-  else strengthText = 'Very Strong';
-
-  return {
-    score: Math.min(100, Math.floor(score)),
-    text: strengthText
-  };
-}
-
-// update the strength meter
-function updatePasswordStrength(password) {
-  const strength = calculatePasswordStrength(password);
-
-  strengthMeterBar.style.width = strength.score + "%";
-  strengthText.textContent = 'Strength: ' + strength.text;
-
-  // Update color based on strength
-  if (strength.score < 20) {
-    strengthMeterBar.style.backgroundColor = '#ff3860'; // Red
-  } else if (strength.score < 40) {
-    strengthMeterBar.style.backgroundColor = '#ffdd57'; // Yellow
-  } else if (strength.score < 60) {
-    strengthMeterBar.style.backgroundColor = '#ffaa00'; // Orange
-  } else if (strength.score < 80) {
-    strengthMeterBar.style.backgroundColor = '#09c372'; // Green
-  } else {
-    strengthMeterBar.style.backgroundColor = '#007aff'; // Blue
+// Password Manager Class
+class PasswordManager {
+  constructor() {
+    this.passwords = this.loadPasswords();
+    this.currentPassword = '';
+    this.editingId = null;
+    this.init();
   }
-}
 
-// --- Password Generation ---
-function generatePassword() { // add  below potentnetially - copyMessage.classList.remove("show");
-  const length = parseInt(lengthSlider.value);
-  const uppercase = includeUppercase.checked;
-  const lowercase = includeLowercase.checked;
-  const numbers = includeNumbers.checked;
-  const symbols = includeSymbols.checked;
-  const excludedChars = excludeChars.value;
-  const shouldAvoidAmbiguous = avoidAmbiguous.checked;
-  const shouldRequireAllTypes = requireAllTypes.checked;
-  const ambiguousChars = "0O1Il|";   // remove or make standard eventually
+  init() {
+    this.setupEventListeners();
+    this.renderPasswords();
+    this.updateEmptyState();
+  }
 
-  if (shouldRequireAllTypes) {
-    const requiredCount = [uppercase, lowercase, numbers, symbols]
-      .filter(Boolean).length;
-    if (length < requiredCount) {
-      errorMessage.textContent =
-        `Length must be at least ${requiredCount} to include all selected types.`;
-      passwordDisplay.value = ''; // Clear display
-      updatePasswordStrength(''); // Reset strength meter
+  // Storage Methods (using localStorage simulation for demo)
+  loadPasswords() {
+    // In Electron, use proper encrypted storage
+    // For demo, using in-memory storage
+    return window.passwordVault || [];
+  }
+
+  savePasswords() {
+    // In Electron, implement proper encryption
+    window.passwordVault = this.passwords;
+  }
+
+  // Password Generation
+  generatePassword() {
+    const length = parseInt(document.getElementById('lengthSlider').value);
+    const uppercase = document.getElementById('uppercase').checked;
+    const lowercase = document.getElementById('lowercase').checked;
+    const numbers = document.getElementById('numbers').checked;
+    const symbols = document.getElementById('symbols').checked;
+    const avoidAmbiguous = document.getElementById('avoidAmbiguous').checked;
+    const requireAll = document.getElementById('requireAll').checked;
+    const excludeChars = document.getElementById('excludeChars').value;
+
+    let chars = '';
+    let password = '';
+    const charSets = {
+      uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      lowercase: 'abcdefghijklmnopqrstuvwxyz',
+      numbers: '0123456789',
+      symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+    };
+
+    // Remove ambiguous characters if needed
+    if (avoidAmbiguous) {
+      charSets.uppercase = charSets.uppercase.replace(/[O]/g, '');
+      charSets.lowercase = charSets.lowercase.replace(/[l]/g, '');
+      charSets.numbers = charSets.numbers.replace(/[01]/g, '');
+      charSets.symbols = charSets.symbols.replace(/[|]/g, '');
+    }
+
+    // Remove excluded characters
+    if (excludeChars) {
+      for (let char of excludeChars) {
+        for (let set in charSets) {
+          charSets[set] = charSets[set].replace(new RegExp(char.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), '');
+        }
+      }
+    }
+
+    // Build character set
+    if (uppercase) chars += charSets.uppercase;
+    if (lowercase) chars += charSets.lowercase;
+    if (numbers) chars += charSets.numbers;
+    if (symbols) chars += charSets.symbols;
+
+    if (!chars) {
+      this.showToast('Please select at least one character type', 'error');
+      return '';
+    }
+
+    // Require all types if selected
+    if (requireAll) {
+      const required = [];
+      if (uppercase && charSets.uppercase) required.push(this.getRandomChar(charSets.uppercase));
+      if (lowercase && charSets.lowercase) required.push(this.getRandomChar(charSets.lowercase));
+      if (numbers && charSets.numbers) required.push(this.getRandomChar(charSets.numbers));
+      if (symbols && charSets.symbols) required.push(this.getRandomChar(charSets.symbols));
+
+      password = required.join('');
+
+      // Fill rest with random chars
+      for (let i = password.length; i < length; i++) {
+        password += this.getRandomChar(chars);
+      }
+
+      // Shuffle password
+      password = password.split('').sort(() => Math.random() - 0.5).join('');
+    } else {
+      for (let i = 0; i < length; i++) {
+        password += this.getRandomChar(chars);
+      }
+    }
+
+    this.currentPassword = password;
+    return password;
+  }
+
+  getRandomChar(str) {
+    const array = new Uint32Array(1);
+    crypto.getRandomValues(array);
+    return str[array[0] % str.length];
+  }
+
+  calculateStrength(password) {
+    if (!password) return { score: 0, text: 'No password' };
+
+    let score = 0;
+
+    // Length score
+    score += Math.min(30, password.length * 2);
+
+    // Character variety
+    if (/[a-z]/.test(password)) score += 10;
+    if (/[A-Z]/.test(password)) score += 10;
+    if (/[0-9]/.test(password)) score += 10;
+    if (/[^a-zA-Z0-9]/.test(password)) score += 20;
+
+    // Pattern penalties
+    if (/(.)\1{2,}/.test(password)) score -= 10; // Repeated characters
+    if (/^[a-zA-Z]+$/.test(password)) score -= 10; // Only letters
+    if (/^[0-9]+$/.test(password)) score -= 10; // Only numbers
+
+    score = Math.max(0, Math.min(100, score));
+
+    let text = 'Very Weak';
+    if (score >= 80) text = 'Very Strong';
+    else if (score >= 60) text = 'Strong';
+    else if (score >= 40) text = 'Medium';
+    else if (score >= 20) text = 'Weak';
+
+    return { score, text };
+  }
+
+  // Password CRUD Operations
+  addPassword(data) {
+    const id = Date.now().toString();
+    const password = {
+      id,
+      ...data,
+      createdAt: new Date().toISOString()
+    };
+
+    this.passwords.push(password);
+    this.savePasswords();
+    this.renderPasswords();
+    this.updateEmptyState();
+
+    return id;
+  }
+
+  updatePassword(id, data) {
+    const index = this.passwords.findIndex(p => p.id === id);
+    if (index !== -1) {
+      this.passwords[index] = {
+        ...this.passwords[index],
+        ...data,
+        updatedAt: new Date().toISOString()
+      };
+      this.savePasswords();
+      this.renderPasswords();
+    }
+  }
+
+  deletePassword(id) {
+    this.passwords = this.passwords.filter(p => p.id !== id);
+    this.savePasswords();
+    this.renderPasswords();
+    this.updateEmptyState();
+  }
+
+  searchPasswords(query) {
+    if (!query) return this.passwords;
+
+    query = query.toLowerCase();
+    return this.passwords.filter(p =>
+      p.siteName.toLowerCase().includes(query) ||
+      p.username.toLowerCase().includes(query) ||
+      (p.notes && p.notes.toLowerCase().includes(query))
+    );
+  }
+
+  // UI Methods
+  renderPasswords(passwords = this.passwords) {
+    const list = document.getElementById('passwordList');
+
+    if (passwords.length === 0) {
+      list.innerHTML = '';
       return;
     }
+
+    list.innerHTML = passwords.map(p => `
+                <div class="password-item" data-id="${p.id}">
+                    <div class="password-info">
+                        <div class="password-title">
+                            <i class="fas fa-globe"></i>
+                            ${this.escapeHtml(p.siteName)}
+                        </div>
+                        <div class="password-details">
+                            <span><i class="fas fa-user"></i> ${this.escapeHtml(p.username)}</span>
+                            <span><i class="fas fa-clock"></i> ${new Date(p.createdAt).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                    <div class="password-actions">
+                        <button class="btn-icon copy-password" data-password="${this.escapeHtml(p.password)}" title="Copy Password">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                        <button class="btn-icon view-password" data-id="${p.id}" title="View Details">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn-icon delete-password" data-id="${p.id}" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+    this.attachPasswordListeners();
   }
 
-  let allowedChars = "";
-  let uppercaseSet = uppercaseChars;
-  let lowercaseSet = lowercaseChars;
-  let numberSet = numberChars;
-  let symbolSet = symbolChars;
+  attachPasswordListeners() {
+    // Copy password buttons
+    document.querySelectorAll('.copy-password').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const password = btn.dataset.password;
+        navigator.clipboard.writeText(password);
+        this.showToast('Password copied to clipboard', 'success');
+      });
+    });
 
-  if (excludedChars || shouldAvoidAmbiguous) {
-    const exclusions = shouldAvoidAmbiguous
-      ? excludedChars + ambiguousChars
-      : excludedChars;
+    // View password buttons
+    document.querySelectorAll('.view-password').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.id;
+        const password = this.passwords.find(p => p.id === id);
+        if (password) {
+          this.showPasswordDetails(password);
+        }
+      });
+    });
 
-    for (const char of exclusions) {
-      uppercaseSet = uppercaseSet.replace(char, "");
-      lowercaseSet = lowercaseSet.replace(char, "");
-      numberSet = numberSet.replace(char, "");
-      symbolSet = symbolSet.replace(char, "");
+    // Delete password buttons
+    document.querySelectorAll('.delete-password').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.dataset.id;
+        if (confirm('Are you sure you want to delete this password?')) {
+          this.deletePassword(id);
+          this.showToast('Password deleted', 'warning');
+        }
+      });
+    });
+  }
+
+  showPasswordDetails(password) {
+    // For now, just show in an alert. You can create a proper modal
+    const details = `
+Site: ${password.siteName}
+Username: ${password.username}
+Password: ${password.password}
+${password.notes ? `Notes: ${password.notes}` : ''}
+Created: ${new Date(password.createdAt).toLocaleString()}
+            `.trim();
+
+    alert(details);
+  }
+
+  updateEmptyState() {
+    const emptyState = document.getElementById('emptyState');
+    const passwordList = document.getElementById('passwordList');
+
+    if (this.passwords.length === 0) {
+      emptyState.style.display = 'block';
+      passwordList.style.display = 'none';
+    } else {
+      emptyState.style.display = 'none';
+      passwordList.style.display = 'grid';
     }
   }
 
-  // Add selected character sets to allowed characters
-  if (uppercase) allowedChars += uppercaseSet;
-  if (lowercase) allowedChars += lowercaseSet;
-  if (numbers) allowedChars += numberSet;
-  if (symbols) allowedChars += symbolSet;
+  showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+    const icon = toast.querySelector('i');
 
-  // Validate character set selection
-  if (!allowedChars) {
-    errorMessage.textContent = "Please select at least one character type.";
-    return;
-  } else {
-    errorMessage.textContent = "";
-  }
+    // Reset classes
+    toast.className = 'toast ' + type;
 
-  // Generate the password
-  let password = "";
+    // Set icon based on type
+    icon.className = type === 'success' ? 'fas fa-check-circle' :
+      type === 'error' ? 'fas fa-exclamation-circle' :
+        'fas fa-info-circle';
 
-  if (shouldRequireAllTypes) {
-    const requiredChars = [];
+    toastMessage.textContent = message;
+    toast.classList.add('show');
 
-    if (uppercase && uppercaseSet.length > 0)
-      requiredChars.push(getSecureRandomChar(uppercaseSet));
-
-    if (lowercase && lowercaseSet.length > 0)
-      requiredChars.push(getSecureRandomChar(lowercaseSet));
-
-    if (numbers && numberSet.length > 0)
-      requiredChars.push(getSecureRandomChar(numberSet));
-
-    if (symbols && symbolSet.length > 0)
-      requiredChars.push(getSecureRandomChar(symbolSet));
-
-    // Add required characters
-    password = requiredChars.join('');
-
-    // Fill the rest randomly
-    for (let i = password.length; i < length; i++) {
-      password += getSecureRandomChar(allowedChars);
-    }
-
-    // Shuffle the password to randomize positions of required characters
-    password = shuffleString(password);
-  } else {
-    // Standard random generation
-    for (let i = 0; i < length; i++) {
-      password += getSecureRandomChar(allowedChars);
-    }
-  }
-
-  // Update UI with new password
-  passwordDisplay.value = password;
-  updatePasswordStrength(password);
-}
-
-// Helper function to shuffle a string
-function shuffleString(string) {
-  const array = string.split('');
-
-  // Fisher-Yates shuffle algorithm
-  for (let i = array.length - 1; i > 0; i--) {
-    const randomBuffer = new Uint32Array(1);
-    window.crypto.getRandomValues(randomBuffer);
-    const j = randomBuffer[0] % (i + 1);
-    [array[i], array[j]] = [array[j], array[i]]; // Swap elements
-  }
-
-  return array.join('');
-}
-
-function updateLengthValue() {
-  lengthValueSpan.textContent = lengthSlider.value;
-}
-
-function copyToClipboard() {
-  if (passwordDisplay.value) {
-    navigator.clipboard.writeText(passwordDisplay.value);
-    copyMessage.classList.add("show");
     setTimeout(() => {
-      copyMessage.classList.remove("show"); // remove if potentially
-    }, 10000); // Message disappears after 3 seconds
+      toast.classList.remove('show');
+    }, 3000);
+  }
+
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  setupEventListeners() {
+    // Tab navigation
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+        tab.classList.add('active');
+        const tabId = tab.dataset.tab;
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+
+    // Length slider
+    const lengthSlider = document.getElementById('lengthSlider');
+    const lengthValue = document.getElementById('lengthValue');
+    lengthSlider.addEventListener('input', () => {
+      lengthValue.textContent = lengthSlider.value;
+    });
+
+    // Generate button
+    document.getElementById('generateBtn').addEventListener('click', () => {
+      const password = this.generatePassword();
+      if (password) {
+        document.getElementById('passwordDisplay').value = password;
+        const strength = this.calculateStrength(password);
+        document.getElementById('strengthValue').textContent = strength.text;
+        document.querySelector('.strength-meter-bar').style.width = strength.score + '%';
+        document.querySelector('.strength-meter-bar').style.backgroundPosition = `${100 - strength.score}% 0`;
+      }
+    });
+
+    // Copy button
+    document.getElementById('copyBtn').addEventListener('click', () => {
+      const passwordDisplay = document.getElementById('passwordDisplay');
+      if (passwordDisplay.value) {
+        navigator.clipboard.writeText(passwordDisplay.value);
+        this.showToast('Password copied to clipboard', 'success');
+      }
+    });
+
+    // Save button
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      const password = document.getElementById('passwordDisplay').value;
+      if (password) {
+        document.getElementById('passwordToSave').value = password;
+        this.openModal('saveModal');
+      } else {
+        this.showToast('Generate a password first', 'error');
+      }
+    });
+
+    // Add password button
+    document.getElementById('addPasswordBtn').addEventListener('click', () => {
+      document.getElementById('passwordToSave').value = '';
+      this.openModal('saveModal');
+    });
+
+    // Save form
+    document.getElementById('saveForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const data = {
+        siteName: document.getElementById('siteName').value,
+        username: document.getElementById('username').value,
+        password: document.getElementById('passwordToSave').value,
+        notes: document.getElementById('notes').value
+      };
+
+      if (this.editingId) {
+        this.updatePassword(this.editingId, data);
+        this.showToast('Password updated', 'success');
+      } else {
+        this.addPassword(data);
+        this.showToast('Password saved', 'success');
+      }
+
+      this.closeModal('saveModal');
+      document.getElementById('saveForm').reset();
+
+      // Switch to vault tab
+      document.querySelector('[data-tab="vault"]').click();
+    });
+
+    // Search
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const results = this.searchPasswords(e.target.value);
+      this.renderPasswords(results);
+    });
+
+    // Modal controls
+    document.querySelectorAll('.modal-close, .modal-cancel').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const modalId = btn.dataset.modal;
+        this.closeModal(modalId);
+      });
+    });
+
+    // Close modal on background click
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.remove('active');
+        }
+      });
+    });
+  }
+
+  openModal(modalId) {
+    document.getElementById(modalId).classList.add('active');
+  }
+
+  closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
+    this.editingId = null;
   }
 }
 
-// --- Event Listeners ---
-generateButton.addEventListener("click", generatePassword);
-lengthSlider.addEventListener("input", updateLengthValue);
-copyButton.addEventListener("click", copyToClipboard);
+// Initialize the app
+const app = new PasswordManager();
 
-// --- Initialization ---
-updateLengthValue(); // Set initial length value
+// Initialize with empty vault
+window.passwordVault = [];
+
