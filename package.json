@@ -15,6 +15,8 @@
     "files": [
       "src/app/main.js",
       "src/app/tray.js",
+      "src/app/preload.js",
+      "src/app/passwordStore.js",
       "src/renderer/index.html",
       "src/renderer/script.js",
       "src/renderer/style.css",

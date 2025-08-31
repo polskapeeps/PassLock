@@ -16,6 +16,7 @@ PassLock is a desktop application for generating secure passwords with customiza
 * Displays a real-time password strength indicator.
 * Provides a one-click copy-to-clipboard button for the generated password.
 * Runs as a tray application for easy access.
+* Stores passwords securely with AES-256-GCM encryption.
 
 ## Technologies Used
 
@@ -49,6 +50,26 @@ PassLock is a desktop application for generating secure passwords with customiza
     ```bash
     npm start
     ```
+
+### Password Storage
+
+PassLock can persist passwords to an encrypted store. Set the `PASSLOCK_MASTER_KEY`
+environment variable to a secret string before running the app. The renderer can
+interact with the store through the `passwordStore` API exposed on `window`:
+
+```javascript
+// Add a password entry
+window.passwordStore.add({ service: 'Example', username: 'alice', password: 'secret' });
+
+// Get all stored passwords
+window.passwordStore.getAll().then(entries => console.log(entries));
+
+// Remove by id
+window.passwordStore.remove(id);
+```
+
+The encrypted data file is saved in the Electron `userData` directory
+(`app.getPath('userData')`).
 
 ### Building for Distribution
 

@@ -1,7 +1,8 @@
 // main.js
-const { app, BrowserWindow } = require('electron');
-const path  = require('path');
+const { app, BrowserWindow, ipcMain } = require('electron');
+const path = require('path');
 const createTray = require('./tray.js');
+const passwordStore = require('./passwordStore.js');
 
 let mainWindow;
 let tray;
@@ -36,6 +37,7 @@ function createWindow () {
     backgroundColor: '#00000000',
     roundedCorners:true,
     webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
     },
@@ -53,8 +55,21 @@ function createWindow () {
 }
 
 app.whenReady().then(() => {
+  passwordStore.initStore();
   createWindow();
   tray = createTray(mainWindow);
+});
+
+ipcMain.handle('password-add', (event, entry) => {
+  return passwordStore.addPassword(entry);
+});
+
+ipcMain.handle('password-get-all', () => {
+  return passwordStore.getPasswords();
+});
+
+ipcMain.handle('password-remove', (event, id) => {
+  return passwordStore.removePassword(id);
 });
 
 app.on('before-quit', () => (isQuitting = true));
