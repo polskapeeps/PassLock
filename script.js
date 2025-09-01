@@ -1,29 +1,75 @@
+const { initializeApp } = require('firebase/app');
+const { getAuth, signInAnonymously } = require('firebase/auth');
+const { getFirestore, collection, getDocs, doc, setDoc, deleteDoc } = require('firebase/firestore');
+const firebaseConfig = require('./firebaseConfig');
+const nodeCrypto = require('crypto');
+
+const ENC_KEY = nodeCrypto.createHash('sha256').update('passlock-secret-key').digest();
+
+function encryptPassword(password) {
+  const iv = nodeCrypto.randomBytes(16);
+  const cipher = nodeCrypto.createCipheriv('aes-256-ctr', ENC_KEY, iv);
+  const encrypted = Buffer.concat([cipher.update(JSON.stringify(password), 'utf8'), cipher.final()]);
+  return { iv: iv.toString('hex'), data: encrypted.toString('hex') };
+}
+
+function decryptPassword(payload) {
+  const iv = Buffer.from(payload.iv, 'hex');
+  const decipher = nodeCrypto.createDecipheriv('aes-256-ctr', ENC_KEY, iv);
+  const decrypted = Buffer.concat([decipher.update(Buffer.from(payload.data, 'hex')), decipher.final()]);
+  return JSON.parse(decrypted.toString('utf8'));
+}
+
 // Password Manager Class
 class PasswordManager {
   constructor() {
-    this.passwords = this.loadPasswords();
+    this.passwords = [];
     this.currentPassword = '';
     this.editingId = null;
     this.isVaultUnlocked = false;
+    this.db = null;
+    this.auth = null;
+    this.uid = null;
     this.init();
   }
 
-  init() {
+  async init() {
+    await this.initFirebase();
     this.setupEventListeners();
+    this.passwords = await this.loadPasswords();
     this.renderPasswords();
     this.updateEmptyState();
   }
 
-  // Storage Methods (using localStorage simulation for demo)
-  loadPasswords() {
-    // In Electron, use proper encrypted storage
-    // For demo, using in-memory storage
-    return window.passwordVault || [];
+  async initFirebase() {
+    const app = initializeApp(firebaseConfig);
+    this.auth = getAuth(app);
+    this.db = getFirestore(app);
+    const userCredential = await signInAnonymously(this.auth);
+    this.uid = userCredential.user.uid;
   }
 
-  savePasswords() {
-    // In Electron, implement proper encryption
-    window.passwordVault = this.passwords;
+  // Storage Methods
+  async loadPasswords() {
+    if (!this.db || !this.uid) return [];
+    const snap = await getDocs(collection(this.db, 'users', this.uid, 'passwords'));
+    const items = [];
+    snap.forEach(docSnap => {
+      const data = decryptPassword(docSnap.data());
+      data.id = docSnap.id;
+      items.push(data);
+    });
+    return items;
+  }
+
+  async savePasswords() {
+    if (!this.db || !this.uid) return;
+    await Promise.all(
+      this.passwords.map(p => {
+        const encrypted = encryptPassword(p);
+        return setDoc(doc(this.db, 'users', this.uid, 'passwords', p.id), encrypted);
+      })
+    );
   }
 
   // Password Generation
@@ -167,9 +213,12 @@ class PasswordManager {
     }
   }
 
-  deletePassword(id) {
+  async deletePassword(id) {
     this.passwords = this.passwords.filter(p => p.id !== id);
-    this.savePasswords();
+    if (this.db && this.uid) {
+      await deleteDoc(doc(this.db, 'users', this.uid, 'passwords', id));
+    }
+    await this.savePasswords();
     this.renderPasswords();
     this.updateEmptyState();
   }
@@ -508,7 +557,4 @@ Created: ${new Date(password.createdAt).toLocaleString()}
 
 // Initialize the app
 const app = new PasswordManager();
-
-// Initialize with empty vault
-window.passwordVault = [];
 

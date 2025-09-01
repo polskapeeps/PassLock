@@ -8,3 +8,4 @@ Thumbs.db
 .references/
 .vscode/
 node_modules/
+firebaseConfig.js
