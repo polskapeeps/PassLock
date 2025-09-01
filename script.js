@@ -4,18 +4,20 @@ const { getFirestore, collection, getDocs, doc, setDoc, deleteDoc } = require('f
 const firebaseConfig = require('./firebaseConfig');
 const nodeCrypto = require('crypto');
 
-const ENC_KEY = nodeCrypto.createHash('sha256').update('passlock-secret-key').digest();
-
-function encryptPassword(password) {
-  const iv = nodeCrypto.randomBytes(16);
-  const cipher = nodeCrypto.createCipheriv('aes-256-ctr', ENC_KEY, iv);
-  const encrypted = Buffer.concat([cipher.update(JSON.stringify(password), 'utf8'), cipher.final()]);
-  return { iv: iv.toString('hex'), data: encrypted.toString('hex') };
+function deriveKey(password, salt) {
+  return nodeCrypto.scryptSync(password, Buffer.from(salt, 'hex'), 32);
 }
 
-function decryptPassword(payload) {
+function encryptPassword(password, key, salt) {
+  const iv = nodeCrypto.randomBytes(16);
+  const cipher = nodeCrypto.createCipheriv('aes-256-ctr', key, iv);
+  const encrypted = Buffer.concat([cipher.update(JSON.stringify(password), 'utf8'), cipher.final()]);
+  return { iv: iv.toString('hex'), salt, data: encrypted.toString('hex') };
+}
+
+function decryptPassword(payload, key) {
   const iv = Buffer.from(payload.iv, 'hex');
-  const decipher = nodeCrypto.createDecipheriv('aes-256-ctr', ENC_KEY, iv);
+  const decipher = nodeCrypto.createDecipheriv('aes-256-ctr', key, iv);
   const decrypted = Buffer.concat([decipher.update(Buffer.from(payload.data, 'hex')), decipher.final()]);
   return JSON.parse(decrypted.toString('utf8'));
 }
@@ -30,14 +32,14 @@ class PasswordManager {
     this.db = null;
     this.auth = null;
     this.uid = null;
+    this.encKey = null;
+    this.encSalt = null;
     this.init();
   }
 
   async init() {
     await this.initFirebase();
     this.setupEventListeners();
-    this.passwords = await this.loadPasswords();
-    this.renderPasswords();
     this.updateEmptyState();
   }
 
@@ -50,23 +52,38 @@ class PasswordManager {
   }
 
   // Storage Methods
-  async loadPasswords() {
+  async loadPasswords(masterPassword) {
     if (!this.db || !this.uid) return [];
     const snap = await getDocs(collection(this.db, 'users', this.uid, 'passwords'));
-    const items = [];
+    const docs = [];
+    let salt = this.encSalt || localStorage.getItem('encryptionSalt');
+
     snap.forEach(docSnap => {
-      const data = decryptPassword(docSnap.data());
-      data.id = docSnap.id;
-      items.push(data);
+      const docData = docSnap.data();
+      if (!salt && docData.salt) salt = docData.salt;
+      docs.push({ id: docSnap.id, ...docData });
     });
-    return items;
+
+    if (!salt) {
+      salt = nodeCrypto.randomBytes(16).toString('hex');
+    }
+
+    localStorage.setItem('encryptionSalt', salt);
+    this.encSalt = salt;
+    this.encKey = deriveKey(masterPassword, salt);
+
+    return docs.map(d => {
+      const data = decryptPassword(d, this.encKey);
+      data.id = d.id;
+      return data;
+    });
   }
 
   async savePasswords() {
-    if (!this.db || !this.uid) return;
+    if (!this.db || !this.uid || !this.encKey || !this.encSalt) return;
     await Promise.all(
       this.passwords.map(p => {
-        const encrypted = encryptPassword(p);
+        const encrypted = encryptPassword(p, this.encKey, this.encSalt);
         return setDoc(doc(this.db, 'users', this.uid, 'passwords', p.id), encrypted);
       })
     );
@@ -386,6 +403,7 @@ Created: ${new Date(password.createdAt).toLocaleString()}
 
   lockVault() {
     this.isVaultUnlocked = false;
+    this.encKey = null;
     document.querySelector('[data-tab="generator"]').click();
     this.showToast('Vault locked', 'warning');
   }
@@ -504,10 +522,13 @@ Created: ${new Date(password.createdAt).toLocaleString()}
         return;
       }
       await this.setMasterPassword(pass);
+      this.passwords = await this.loadPasswords(pass);
       this.isVaultUnlocked = true;
       this.closeModal('setupMasterModal');
       document.getElementById('setupMasterForm').reset();
       document.querySelector('[data-tab="vault"]').click();
+      this.renderPasswords();
+      this.updateEmptyState();
       this.showToast('Master password set', 'success');
     });
 
@@ -517,10 +538,13 @@ Created: ${new Date(password.createdAt).toLocaleString()}
       const pass = document.getElementById('masterPasswordInput').value;
       const valid = await this.verifyMasterPassword(pass);
       if (valid) {
+        this.passwords = await this.loadPasswords(pass);
         this.isVaultUnlocked = true;
         this.closeModal('unlockMasterModal');
         document.getElementById('unlockMasterForm').reset();
         document.querySelector('[data-tab="vault"]').click();
+        this.renderPasswords();
+        this.updateEmptyState();
         this.showToast('Vault unlocked', 'success');
       } else {
         this.showToast('Incorrect master password', 'error');
