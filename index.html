@@ -14,75 +14,281 @@
   </head>
 
   <body>
-    <div class="container">
-      <h1>Generate Password</h1>
+    <div class="background-glow background-glow--primary"></div>
+    <div class="background-glow background-glow--secondary"></div>
 
-      <div class="password-display-container">
-        <input
-          type="text"
-          id="passwordDisplay"
-          placeholder="Your Password Here"
-          readonly
-        />
-        <button id="copyButton" title="Copy to Clipboard">
-          <i class="far fa-copy"></i>
-        </button>
-      </div>
-      
-      <div id="strength-meter" class="strength-meter">
-        <div class="strength-meter-bar"></div>
-      </div>
-      <div id="strength-text" class="strength-text">Password Strength: </div>
-
-      <div id="copyMessage" class="copy-message">Copied to clipboard</div>
-
-      <div class="options">
-        <div class="option">
-          <label for="lengthSlider"
-            >Password Length: <span id="lengthValue">16</span></label
-          >
-          <input type="range" id="lengthSlider" min="4" max="28" value="16" />
+    <div class="app-container">
+      <header class="app-header">
+        <div class="brand">
+          <div class="brand-mark">
+            <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+          </div>
+          <div class="brand-copy">
+            <span class="brand-name">PassLock</span>
+            <span class="brand-tagline">Privacy-first credentials</span>
+          </div>
         </div>
-        
-        <div class="option">
-          <label for="excludeChars">Exclude Characters:</label>
-          <input type="text" id="excludeChars" placeholder="e.g. ${/}...<1337>" />
+        <div class="header-actions">
+          <span class="status-pill">
+            <i class="fa-solid fa-lock" aria-hidden="true"></i>
+            Local-only generation
+          </span>
         </div>
+      </header>
 
-        <div class="option checkbox-option">
-          <input type="checkbox" id="includeUppercase" checked />
-          <label for="includeUppercase">Include Uppercase (A-Z)</label>
-        </div>
+      <main class="app-main">
+        <section class="panel generator-panel">
+          <div class="panel-header">
+            <span class="eyebrow">Password generator</span>
+            <h1>Craft privacy-grade passwords</h1>
+            <p>
+              Generate high-entropy credentials tailored to your policy. When the
+              vault launches, you'll be able to save every secret in one
+              encrypted place.
+            </p>
+          </div>
 
-        <div class="option checkbox-option">
-          <input type="checkbox" id="includeLowercase" checked />
-          <label for="includeLowercase">Include Lowercase (a-z)</label>
-        </div>
+          <div class="password-surface">
+            <div class="password-display-container">
+              <input
+                type="text"
+                id="passwordDisplay"
+                placeholder="Tap Generate to produce a password"
+                readonly
+                aria-label="Generated password"
+              />
+              <button id="copyButton" type="button" title="Copy to Clipboard">
+                <i class="fa-regular fa-copy" aria-hidden="true"></i>
+                <span>Copy</span>
+              </button>
+              <div id="copyMessage" class="copy-message" role="status">
+                Copied to clipboard
+              </div>
+            </div>
 
-        <div class="option checkbox-option">
-          <input type="checkbox" id="includeNumbers" checked />
-          <label for="includeNumbers">Include Numbers (0-9)</label>
-        </div>
+            <div class="strength-wrapper">
+              <div id="strength-meter" class="strength-meter" aria-hidden="true">
+                <div class="strength-meter-bar"></div>
+              </div>
+              <span id="strength-text" class="strength-text"
+                >Strength: Waiting for input</span
+              >
+            </div>
+          </div>
 
-        <div class="option checkbox-option">
-          <input type="checkbox" id="includeSymbols" />
-          <label for="includeSymbols">Include Symbols (!@#$%^&*)</label>
-        </div>
+          <div class="options">
+            <div class="option-section">
+              <div class="section-header">
+                <span class="section-title">Length &amp; policy</span>
+                <span class="section-subtitle"
+                  >Define the baseline rules for your password.</span
+                >
+              </div>
 
-        <div class="option checkbox-option">
-          <input type="checkbox" id="requireAllTypes" />
-          <label for="requireAllTypes">Require All Selected Types</label>
-        </div>
+              <div class="range-control">
+                <div class="range-label">
+                  <span>Password length</span>
+                  <span id="lengthValue" class="pill">16</span>
+                </div>
+                <input
+                  type="range"
+                  id="lengthSlider"
+                  min="4"
+                  max="28"
+                  value="16"
+                  aria-labelledby="lengthValue"
+                />
+                <div class="range-scale" aria-hidden="true">
+                  <span>4</span>
+                  <span>28</span>
+                </div>
+              </div>
 
-        <div class="option checkbox-option">
-          <input type="checkbox" id="avoidAmbiguous" />
-          <label for="avoidAmbiguous">Avoid Ambiguous (0O1Il|)</label>
-        </div>
-        
-      </div>
+              <div class="input-field">
+                <label for="excludeChars">Exclude characters</label>
+                <div class="input-wrapper">
+                  <i class="fa-solid fa-slash" aria-hidden="true"></i>
+                  <input
+                    type="text"
+                    id="excludeChars"
+                    placeholder="e.g. 0O1Il|${}" />
+                </div>
+                <p class="field-hint">
+                  Characters in this list will never appear in generated
+                  passwords.
+                </p>
+              </div>
+            </div>
 
-      <button id="generateButton">Generate Password</button>
-      <div id="error-message" class="error-message"></div>
+            <div class="option-section">
+              <div class="section-header">
+                <span class="section-title">Character sets</span>
+                <span class="section-subtitle"
+                  >Select the building blocks for each password.</span
+                >
+              </div>
+              <div class="toggle-grid">
+                <label class="toggle">
+                  <input type="checkbox" id="includeUppercase" checked />
+                  <span class="toggle-control" aria-hidden="true"></span>
+                  <span class="toggle-label">
+                    <strong>Uppercase</strong>
+                    <small>A–Z</small>
+                  </span>
+                </label>
+
+                <label class="toggle">
+                  <input type="checkbox" id="includeLowercase" checked />
+                  <span class="toggle-control" aria-hidden="true"></span>
+                  <span class="toggle-label">
+                    <strong>Lowercase</strong>
+                    <small>a–z</small>
+                  </span>
+                </label>
+
+                <label class="toggle">
+                  <input type="checkbox" id="includeNumbers" checked />
+                  <span class="toggle-control" aria-hidden="true"></span>
+                  <span class="toggle-label">
+                    <strong>Numbers</strong>
+                    <small>0–9</small>
+                  </span>
+                </label>
+
+                <label class="toggle">
+                  <input type="checkbox" id="includeSymbols" />
+                  <span class="toggle-control" aria-hidden="true"></span>
+                  <span class="toggle-label">
+                    <strong>Symbols</strong>
+                    <small>!@#$%^</small>
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div class="option-section">
+              <div class="section-header">
+                <span class="section-title">Policy guards</span>
+                <span class="section-subtitle"
+                  >Keep output compliant with your security requirements.</span
+                >
+              </div>
+              <div class="toggle-grid">
+                <label class="toggle">
+                  <input type="checkbox" id="requireAllTypes" />
+                  <span class="toggle-control" aria-hidden="true"></span>
+                  <span class="toggle-label">
+                    <strong>Require all selected sets</strong>
+                    <small>Guarantees variety in every password.</small>
+                  </span>
+                </label>
+
+                <label class="toggle">
+                  <input type="checkbox" id="avoidAmbiguous" />
+                  <span class="toggle-control" aria-hidden="true"></span>
+                  <span class="toggle-label">
+                    <strong>Avoid ambiguous</strong>
+                    <small>Skip look-alike characters such as 0O1Il|.</small>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button id="generateButton" type="button" class="btn btn--primary">
+              <i class="fa-solid fa-bolt" aria-hidden="true"></i>
+              Generate password
+            </button>
+            <button type="button" class="btn btn--ghost" disabled>
+              <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+              Save to vault (coming soon)
+            </button>
+          </div>
+
+          <div id="error-message" class="error-message" role="alert"></div>
+        </section>
+
+        <aside class="panel vault-panel">
+          <div class="panel-header">
+            <span class="eyebrow">Vault vision</span>
+            <h2>Designed for zero-knowledge storage</h2>
+            <p>
+              PassLock's next milestone introduces an encrypted vault to safely
+              catalogue credentials without leaking metadata.
+            </p>
+          </div>
+
+          <ul class="vault-highlights">
+            <li>
+              <i class="fa-solid fa-user-lock" aria-hidden="true"></i>
+              <span>Keys that never leave your device.</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+              <span>Fast search across tags, services, and teams.</span>
+            </li>
+            <li>
+              <i class="fa-solid fa-sitemap" aria-hidden="true"></i>
+              <span>Audit trails for shared credentials and rotation.</span>
+            </li>
+          </ul>
+
+          <div class="vault-wireframe" aria-hidden="true">
+            <div class="vault-wireframe-header">
+              <span class="col-service">Service</span>
+              <span class="col-updated">Updated</span>
+              <span class="col-strength">Strength</span>
+            </div>
+            <div class="vault-item">
+              <div class="vault-service">
+                <i class="fa-solid fa-globe"></i>
+                <div>
+                  <span class="title">console.passlock.dev</span>
+                  <span class="meta">Workspace • Admin</span>
+                </div>
+              </div>
+              <span class="vault-updated">moments ago</span>
+              <span class="vault-strength strong">Strong</span>
+            </div>
+            <div class="vault-item">
+              <div class="vault-service">
+                <i class="fa-solid fa-cloud"></i>
+                <div>
+                  <span class="title">infra.cluster</span>
+                  <span class="meta">Production • Shared</span>
+                </div>
+              </div>
+              <span class="vault-updated">yesterday</span>
+              <span class="vault-strength medium">Medium</span>
+            </div>
+            <div class="vault-item">
+              <div class="vault-service">
+                <i class="fa-solid fa-mobile-screen-button"></i>
+                <div>
+                  <span class="title">mobile-app</span>
+                  <span class="meta">Personal • Device</span>
+                </div>
+              </div>
+              <span class="vault-updated">12 days ago</span>
+              <span class="vault-strength weak">Weak</span>
+            </div>
+          </div>
+
+          <div class="vault-empty">
+            <i class="fa-solid fa-inbox" aria-hidden="true"></i>
+            <h3>Vault inbox ready</h3>
+            <p>
+              Saved passwords will land here with filtering, tagging, and quick
+              actions. Start planning naming conventions and tags to stay
+              organized from day one.
+            </p>
+            <button type="button" class="btn btn--secondary" disabled>
+              Outline vault categories
+            </button>
+          </div>
+        </aside>
+      </main>
     </div>
 
     <script src="script.js"></script>
