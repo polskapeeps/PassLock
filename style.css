@@ -19,6 +19,7 @@
   --shadow-card: 0 18px 40px rgba(2, 6, 23, 0.45);
   --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --layout-page-padding: clamp(18px, 5vw, 32px);
 }
 
 * {
@@ -38,12 +39,25 @@ body {
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 32px;
+  padding: var(--layout-page-padding);
+  padding-top: var(--layout-page-padding);
+  padding-bottom: var(--layout-page-padding);
   position: relative;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Extend body padding to respect device safe areas when available */
+body {
+  padding-top: calc(var(--layout-page-padding) + constant(safe-area-inset-top));
+  padding-bottom: calc(var(--layout-page-padding) + constant(safe-area-inset-bottom));
+  padding-top: calc(var(--layout-page-padding) + env(safe-area-inset-top));
+  padding-bottom: calc(var(--layout-page-padding) + env(safe-area-inset-bottom));
 }
 
 button,
@@ -54,6 +68,12 @@ select {
   -webkit-app-region: no-drag;
   font: inherit;
   color: inherit;
+}
+
+@media (pointer: coarse) {
+  body {
+    -webkit-app-region: initial;
+  }
 }
 
 .background-glow {
@@ -81,6 +101,7 @@ select {
   position: relative;
   z-index: 1;
   width: min(100%, 1100px);
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 28px;
@@ -733,7 +754,7 @@ input[type="range"]:hover::-moz-range-thumb {
 
 @media (max-width: 1080px) {
   body {
-    padding: 24px;
+    justify-content: flex-start;
   }
 
   .app-main {
@@ -743,7 +764,12 @@ input[type="range"]:hover::-moz-range-thumb {
 
 @media (max-width: 720px) {
   body {
-    padding: 18px;
+    align-items: stretch;
+  }
+
+  .app-container {
+    width: 100%;
+    gap: 24px;
   }
 
   .app-header {
@@ -771,10 +797,6 @@ input[type="range"]:hover::-moz-range-thumb {
 }
 
 @media (max-width: 520px) {
-  body {
-    padding: 16px;
-  }
-
   .app-container {
     gap: 20px;
   }
@@ -809,5 +831,21 @@ input[type="range"]:hover::-moz-range-thumb {
 
   .action-row {
     flex-direction: column;
+  }
+
+  .vault-wireframe-header,
+  .vault-item {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .vault-wireframe-header span,
+  .vault-item span {
+    text-align: left;
+  }
+
+  .vault-updated,
+  .vault-strength {
+    justify-self: start;
   }
 }
