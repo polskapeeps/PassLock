@@ -241,24 +241,82 @@ function showCopyFeedback(message, isError = false) {
   }, 2400);
 }
 
+function legacyCopyToClipboard() {
+  if (typeof document.execCommand !== "function") {
+    return false;
+  }
+
+  const activeElement = document.activeElement;
+  const selection = window.getSelection();
+  const previousRange = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+
+  try {
+    passwordDisplay.focus({ preventScroll: true });
+  } catch (error) {
+    passwordDisplay.focus();
+  }
+
+  passwordDisplay.select();
+  passwordDisplay.setSelectionRange(0, passwordDisplay.value.length);
+
+  let success = false;
+  try {
+    success = document.execCommand("copy");
+  } catch (error) {
+    success = false;
+  }
+
+  if (typeof passwordDisplay.setSelectionRange === "function") {
+    const position = passwordDisplay.value.length;
+    passwordDisplay.setSelectionRange(position, position);
+  }
+
+  if (selection) {
+    selection.removeAllRanges();
+    if (previousRange) {
+      selection.addRange(previousRange);
+    }
+  }
+
+  if (activeElement && activeElement !== passwordDisplay && typeof activeElement.focus === "function") {
+    try {
+      activeElement.focus({ preventScroll: true });
+    } catch (error) {
+      activeElement.focus();
+    }
+  } else {
+    passwordDisplay.blur();
+  }
+
+  return success;
+}
+
 function copyToClipboard() {
   if (!passwordDisplay.value) {
     return;
   }
 
-  if (!navigator.clipboard) {
-    showCopyFeedback("Clipboard unavailable", true);
+  if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+    navigator.clipboard
+      .writeText(passwordDisplay.value)
+      .then(() => {
+        showCopyFeedback("Copied to clipboard");
+      })
+      .catch(() => {
+        if (legacyCopyToClipboard()) {
+          showCopyFeedback("Copied to clipboard");
+        } else {
+          showCopyFeedback("Clipboard blocked", true);
+        }
+      });
     return;
   }
 
-  navigator.clipboard
-    .writeText(passwordDisplay.value)
-    .then(() => {
-      showCopyFeedback("Copied to clipboard");
-    })
-    .catch(() => {
-      showCopyFeedback("Clipboard blocked", true);
-    });
+  if (legacyCopyToClipboard()) {
+    showCopyFeedback("Copied to clipboard");
+  } else {
+    showCopyFeedback("Clipboard unavailable", true);
+  }
 }
 
 // --- Event Listeners ---
