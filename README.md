@@ -1,93 +1,108 @@
 # PassLock
 
-PassLock is a desktop application for generating secure passwords with customizable options. It is built with Electron and provides a simple interface for creating strong passwords.
+PassLock is a desktop application for generating secure passwords with customizable options. It is built with Electron and keeps the original frameless rounded/oval-style desktop UI.
 
 ## Features
 
-* Generates passwords with a user-defined length (4-28 characters).
-* Allows inclusion/exclusion of:
-    * Uppercase letters (A-Z)
-    * Lowercase letters (a-z)
-    * Numbers (0-9)
-    * Symbols (!@#$%^&*)
-* Option to exclude specific user-defined characters.
-* Option to avoid ambiguous characters (e.g., 0, O, 1, I, l).
-* Option to require that the generated password includes at least one character from each selected type.
-* Displays a real-time password strength indicator.
-* Provides a one-click copy-to-clipboard button for the generated password.
-* Runs as a tray application for easy access.
+- Generates passwords with a user-defined length (4-28 characters).
+- Character controls:
+  - Uppercase letters (A-Z)
+  - Lowercase letters (a-z)
+  - Numbers (0-9)
+  - Symbols (!@#$%^&*)
+- Exclude specific characters.
+- Avoid ambiguous characters (e.g., 0, O, 1, I, l).
+- Require at least one character from each selected type.
+- Real-time password strength indicator.
+- One-click copy-to-clipboard.
+- **Local saved password vault** with account label + optional username.
+- Saved vault entries can be copied or deleted.
+- Uses Electron `safeStorage` OS encryption when available.
+- Runs as a tray application for quick access.
+
+## Security Review (Current State)
+
+### Improvements made in this update
+
+- Added a secure bridge (`preload.js`) and IPC handlers so the renderer never gets direct Node.js APIs.
+- Added vault persistence in the main process only.
+- Added encryption for saved passwords using `safeStorage` where supported by the OS.
+- Added UI warnings when OS-level encryption is not available.
+
+### Remaining suggestions
+
+- Add a strict Content Security Policy and host local icon/font assets instead of remote CDNs.
+- Add auto-clear clipboard after a timer (optional security mode).
+- Add export/import with a user master password (encrypted backup).
+- Add search/filter in vault entries when the list grows.
+- Add unit tests for password generation and IPC vault validation.
 
 ## Technologies Used
 
-* HTML
-* CSS
-* JavaScript
-* Electron
-* Node.js
+- HTML
+- CSS
+- JavaScript
+- Electron
+- Node.js
 
 ## Getting Started
 
 ### Prerequisites
 
-* Node.js and npm installed. Download from [nodejs.org](https://nodejs.org/).
+- Node.js and npm installed. Download from [nodejs.org](https://nodejs.org/).
 
 ### Running Locally
 
-1.  Clone the repository:
-    ```bash
-    git clone [https://github.com/polskapeeps/PassLock.git](https://github.com/polskapeeps/PassLock.git)
-    ```
-2.  Navigate to the project directory:
-    ```bash
-    cd PassLock-Electron-DesktopApp
-    ```
-3.  Install dependencies:
-    ```bash
-    npm install
-    ```
-4.  Start the application:
-    ```bash
-    npm start
-    ```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/polskapeeps/PassLock.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd PassLock
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+4. Start the application:
+   ```bash
+   npm start
+   ```
 
 ### Building for Distribution
 
 The application can be packaged for Windows and macOS using Electron Builder.
 
-* **To build for Windows:**
-    ```bash
-    npm run dist:win
-    ```
-* **To build for macOS:**
-    ```bash
-    npm run dist:mac
-    ```
-    The distributable files will be located in the `dist/` directory.
+- **To build for Windows:**
+  ```bash
+  npm run dist:win
+  ```
+- **To build for macOS:**
+  ```bash
+  npm run dist:mac
+  ```
+
+Distributable files will be generated in the `dist/` directory.
 
 ## Project Structure
 
-````
-
-PassLock-Electron-DesktopApp/
+```text
+PassLock/
 ├── src/
 │   ├── app/
-│   │   ├── main.js         \# Main Electron process, window creation
-│   │   └── tray.js         \# System tray icon and context menu logic
+│   │   ├── main.js         # Main Electron process + vault handlers
+│   │   ├── preload.js      # Secure renderer <-> main bridge
+│   │   └── tray.js         # System tray icon and context menu logic
 │   └── renderer/
-│       ├── index.html      \# Main HTML file for the UI
-│       ├── script.js       \# Frontend logic, password generation
-│       └── style.css       \# Application styles
+│       ├── index.html      # Main UI
+│       ├── script.js       # Password generation + vault UI logic
+│       └── style.css       # Styling
 ├── assets/
-│   └── icons/              \# Application icons (e.g., .ico, .png)
-├── build/
-│   ├── icon.icns           \# macOS application icon
-│   └── background.png      \# Background image for macOS DMG installer
-├── package.json            \# Project metadata, dependencies, and build scripts
-└── README.md               \# This README file
-
+├── package.json
+└── README.md
 ```
 
 ## License
 
 This project is licensed under the MIT License. See the [repository](https://github.com/polskapeeps/PassLock) for more details.
-```

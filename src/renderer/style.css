@@ -1,18 +1,18 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
 
 :root {
-  --bg-color: #212121;         
-  --container-bg: #424242;     
-  --primary-color: #26A69A;    
-  --primary-hover: #00897B;    
-  --text-color: #FAFAFA;       
-  --text-muted: #BDBDBD;       
-  --border-color: #616161;     
-  --input-bg: #303030;         
-  --success-color: #66BB6A;    
-  --error-color: #EF5350;      
+  --bg-color: #212121;
+  --container-bg: #424242;
+  --primary-color: #26a69a;
+  --primary-hover: #00897b;
+  --text-color: #fafafa;
+  --text-muted: #bdbdbd;
+  --border-color: #616161;
+  --input-bg: #303030;
+  --success-color: #66bb6a;
+  --error-color: #ef5350;
   --slider-track: #757575;
-  --slider-thumb: #26A69A;
+  --slider-thumb: #26a69a;
 }
 
 * {
@@ -21,42 +21,58 @@
   padding: 0;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   overflow: hidden;
   background: transparent;
 }
 
 body {
-    -webkit-app-region:drag;
-    border-radius: 15px;
-    overflow: hidden;
-    font-family: "Poppins", sans-serif;
-    background-color: transparent;
-    color: var(--text-color);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-  }
+  -webkit-app-region: drag;
+  border-radius: 15px;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+  background-color: transparent;
+  color: var(--text-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
 
-  button, input, select, label, a {
-    -webkit-app-region: no-drag;
-  }
+button,
+input,
+select,
+label,
+a,
+li {
+  -webkit-app-region: no-drag;
+}
 
 .container {
   background-color: var(--container-bg);
-  padding: 10px;
+  padding: 12px;
   border-radius: 60px;
   box-shadow: none;
   filter: none;
-  width: fit-content;
-  height: fit-content;
+  width: 100%;
   max-width: 380px;
+  max-height: 100%;
+  overflow-y: auto;
   text-align: center;
+}
+
+.container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.container::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 20px;
 }
 
 h1 {
@@ -65,6 +81,12 @@ h1 {
   font-size: 1.5rem;
   font-weight: 900;
   text-shadow: 0 0 30px var(--primary-color);
+}
+
+h2 {
+  color: var(--text-color);
+  font-size: 1rem;
+  margin-bottom: 8px;
 }
 
 .password-display-container {
@@ -90,7 +112,10 @@ h1 {
   color: var(--text-muted);
 }
 
-#copyButton {
+#copyButton,
+#generateButton,
+#savePasswordButton,
+.saved-passwords button {
   padding: 5px 12px;
   background-color: var(--primary-color);
   color: var(--bg-color);
@@ -99,12 +124,18 @@ h1 {
   border-right: 4px solid var(--bg-color);
   border-radius: 2px 50px 2px 30px;
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 1rem;
   transition: background-color 0.5s ease;
+}
+
+#copyButton {
   margin-left: 5px;
 }
 
-#copyButton:hover {
+#copyButton:hover,
+#generateButton:hover,
+#savePasswordButton:hover,
+.saved-passwords button:hover {
   background-color: var(--primary-hover);
   box-shadow: 0 0 8px var(--primary-hover);
 }
@@ -118,8 +149,7 @@ h1 {
 }
 
 .copy-message.show {
-  opacity: 5;
-  margin: 10px;
+  opacity: 1;
 }
 
 .strength-meter {
@@ -144,17 +174,17 @@ h1 {
   color: var(--text-muted);
   text-align: left;
   margin-top: 5px;
-  height: .9em;
+  height: 0.9em;
 }
 
 .options {
   margin-top: 10px;
-  margin-bottom: 3px;
+  margin-bottom: 10px;
   text-align: left;
 }
 
 .option {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   display: flex;
   flex-direction: column;
 }
@@ -182,17 +212,9 @@ h1 {
   color: var(--primary-hover);
 }
 
-
-.option-description {
-  display: block;
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  margin-top: 3px;
-}
-
 input[type="text"] {
   width: 100%;
-  padding: 5px 20px;
+  padding: 7px 12px;
   border: 1px solid var(--border-color);
   background-color: var(--input-bg);
   color: var(--text-color);
@@ -204,6 +226,7 @@ input[type="text"] {
 input[type="text"]::placeholder {
   color: var(--text-muted);
 }
+
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -260,48 +283,69 @@ input[type="checkbox"]:checked {
   border-color: var(--border-color);
 }
 
-input[type="checkbox"]:checked::after {
-  content: "\f00c";
-  font-family: "Font Awesome 6 Free";
-  font-weight: 900;
-  color: white;
-  font-size: 12px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+#generateButton,
+#savePasswordButton {
+  width: 100%;
+  margin-top: 8px;
 }
 
-#error-message {
+.error-message {
   color: var(--error-color);
-  font-size: 0.9em;
+  text-align: left;
+  font-size: 0.85rem;
+  min-height: 1.1rem;
   margin-top: 6px;
 }
 
-#generateButton {
-  background-color: var(--primary-color);
-  color: #1a1b1f;
+.vault-panel {
+  margin-top: 10px;
+  text-align: left;
+  border-top: 1px dashed var(--border-color);
+  padding-top: 10px;
+}
+
+.vault-security-hint {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  margin-bottom: 8px;
+}
+
+.saved-passwords {
+  list-style: none;
+  margin-top: 10px;
+  display: grid;
+  gap: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.saved-passwords li {
+  background-color: var(--input-bg);
   border: 1px solid var(--border-color);
-  padding: 10px;
-  border-radius: 100px 1px 100px 1px;
-  font-size: 1.3rem;
-  font-weight: 750;
-  cursor: pointer;
-  width: 85%;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  border-radius: 20px 2px 20px 2px;
+  padding: 8px;
 }
 
-#generateButton:hover {
-  background-color: var(--primary-hover);
-  box-shadow: 0 0 8px var(--primary-hover);
+.saved-passwords .entry-meta {
+  color: var(--text-muted);
+  font-size: 0.7rem;
 }
 
-#generateButton:active {
-  transform: scale(0.98);
+.saved-passwords .entry-password {
+  margin: 4px 0;
+  font-family: "Courier New", Courier, monospace;
+  word-break: break-all;
 }
 
-@media (max-width: 400px) {
-  .container {
-    padding: 20px;
-  }
+.saved-passwords .entry-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.saved-passwords .empty-state {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-align: center;
 }
