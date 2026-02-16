@@ -18,11 +18,12 @@
       "src/renderer/index.html",
       "src/renderer/script.js",
       "src/renderer/style.css",
-      "assets/icons/favicon.ico",
-      "build/icon.icns"
+      "assets/Icons/favicon.ico",
+      "build/icon.icns",
+      "src/app/preload.js"
     ],
     "win": {
-      "icon": "assets/icons/favicon.ico",
+      "icon": "assets/Icons/favicon.ico",
       "target": "nsis"
     },
     "mac": {

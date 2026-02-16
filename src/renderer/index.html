@@ -80,23 +80,36 @@
         </div>
 
         <div class="option checkbox-option">
-          <input type="checkbox" id="includeSymbols" checked/>
+          <input type="checkbox" id="includeSymbols" checked />
           <label for="includeSymbols">Include Symbols (!@#$%^&*)</label>
         </div>
 
         <div class="option checkbox-option">
-          <input type="checkbox" id="requireAllTypes" checked/>
+          <input type="checkbox" id="requireAllTypes" checked />
           <label for="requireAllTypes">Require All Selected Types</label>
         </div>
 
         <div class="option checkbox-option">
-          <input type="checkbox" id="avoidAmbiguous" checked/>
+          <input type="checkbox" id="avoidAmbiguous" checked />
           <label for="avoidAmbiguous">Avoid Ambiguous (0O1Il|)</label>
         </div>
       </div>
 
       <button id="generateButton">Generate Password</button>
       <div id="error-message" class="error-message"></div>
+
+      <section class="vault-panel">
+        <h2>Saved Passwords</h2>
+        <p id="vaultSecurityHint" class="vault-security-hint"></p>
+
+        <div class="vault-form">
+          <input type="text" id="vaultLabel" placeholder="Account / Site name" maxlength="60" />
+          <input type="text" id="vaultUsername" placeholder="Username (optional)" maxlength="100" />
+          <button id="savePasswordButton">Save Current Password</button>
+        </div>
+
+        <ul id="savedPasswords" class="saved-passwords"></ul>
+      </section>
     </div>
 
     <script src="./script.js"></script>
