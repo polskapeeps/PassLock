@@ -2,172 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PassLock</title>
-    <link rel="apple-touch-icon" href="passlock-icon.png" />
-    <link rel="icon" type="image/png" href="favicon.png" />
-    <link rel="stylesheet" href="style.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
+    <meta
+      name="description"
+      content="PassLock is a local-first password manager with secure password generation, vault encryption, and optional cloud sync."
+    />
+    <meta name="theme-color" content="#09111c" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/passlock-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <title>PassLock</title>
   </head>
-
   <body>
-    <div class="background-glow background-glow--primary"></div>
-    <div class="background-glow background-glow--secondary"></div>
-
-    <div class="app-container">
-      <header class="app-header">
-        <div class="brand">
-          <div class="brand-mark">
-            <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
-          </div>
-          <div class="brand-copy">
-            <span class="brand-name">PassLock</span>
-            <span class="brand-tagline">Instant password generator</span>
-          </div>
-        </div>
-        <div class="header-actions">
-          <span class="status-pill">
-            <i class="fa-solid fa-lock" aria-hidden="true"></i>
-            Offline ready
-          </span>
-        </div>
-      </header>
-
-      <main class="app-main">
-        <section class="panel generator-panel">
-          <div class="panel-header">
-            <span class="eyebrow">Password generator</span>
-            <h1>Quick, strong passwords</h1>
-          </div>
-
-          <div class="password-area">
-            <div class="password-display-container">
-              <input
-                type="text"
-                id="passwordDisplay"
-                placeholder="Tap Generate to create a password"
-                readonly
-                aria-label="Generated password"
-              />
-              <button id="copyButton" type="button" title="Copy to Clipboard">
-                <i class="fa-regular fa-copy" aria-hidden="true"></i>
-                <span>Copy</span>
-              </button>
-              <div id="copyMessage" class="copy-message" role="status">
-                Copied to clipboard
-              </div>
-            </div>
-
-            <div class="strength-wrapper">
-              <div id="strength-meter" class="strength-meter" aria-hidden="true">
-                <div class="strength-meter-bar"></div>
-              </div>
-              <span id="strength-text" class="strength-text"
-                >Strength: Waiting for input</span
-              >
-            </div>
-          </div>
-
-          <div class="primary-controls">
-            <div class="range-control">
-              <label class="range-label" for="lengthSlider">
-                <span>Length</span>
-                <span id="lengthValue" class="pill">18</span>
-              </label>
-              <input
-                type="range"
-                id="lengthSlider"
-                min="4"
-                max="28"
-                value="18"
-              />
-            </div>
-            <button id="generateButton" type="button" class="btn btn--primary">
-              <i class="fa-solid fa-bolt" aria-hidden="true"></i>
-              Generate
-            </button>
-          </div>
-
-          <div class="option-groups">
-            <div class="option-group">
-              <span class="group-title">Characters</span>
-              <div class="option-grid">
-                <label class="check-option">
-                  <input type="checkbox" id="includeUppercase" checked />
-                  <span>
-                    <strong>Uppercase</strong>
-                    <small>A–Z</small>
-                  </span>
-                </label>
-
-                <label class="check-option">
-                  <input type="checkbox" id="includeLowercase" checked />
-                  <span>
-                    <strong>Lowercase</strong>
-                    <small>a–z</small>
-                  </span>
-                </label>
-
-                <label class="check-option">
-                  <input type="checkbox" id="includeNumbers" checked />
-                  <span>
-                    <strong>Numbers</strong>
-                    <small>0–9</small>
-                  </span>
-                </label>
-
-                <label class="check-option">
-                  <input type="checkbox" id="includeSymbols" checked />
-                  <span>
-                    <strong>Symbols</strong>
-                    <small>!@#$%^</small>
-                  </span>
-                </label>
-              </div>
-            </div>
-
-            <div class="option-group">
-              <span class="group-title">Extras</span>
-              <div class="option-grid option-grid--compact">
-                <label class="check-option">
-                  <input type="checkbox" id="requireAllTypes" checked />
-                  <span>
-                    <strong>Use every set</strong>
-                    <small>Guarantee variety</small>
-                  </span>
-                </label>
-
-                <label class="check-option">
-                  <input type="checkbox" id="avoidAmbiguous" checked />
-                  <span>
-                    <strong>Avoid look-alikes</strong>
-                    <small>Skip 0O1Il|</small>
-                  </span>
-                </label>
-              </div>
-            </div>
-
-            <div class="input-field">
-              <label for="excludeChars">Exclude characters</label>
-              <div class="input-wrapper">
-                <i class="fa-solid fa-slash" aria-hidden="true"></i>
-                <input
-                  type="text"
-                  id="excludeChars"
-                  placeholder="Type characters to skip"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div id="error-message" class="error-message" role="alert"></div>
-        </section>
-      </main>
-    </div>
-
-    <script src="script.js"></script>
+    <div id="app"></div>
+    <script type="module" src="/src/renderer/main.ts"></script>
   </body>
-</html>
+  </html>

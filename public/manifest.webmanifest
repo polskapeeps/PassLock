@@ -1,0 +1,23 @@
+{
+  "name": "PassLock",
+  "short_name": "PassLock",
+  "description": "A local-first password manager with secure generation, encrypted vaults, and optional sync.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09111c",
+  "theme_color": "#09111c",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/passlock-icon.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ]
+}

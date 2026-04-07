@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "ignoreDeprecations": "6.0",
+    "resolveJsonModule": true,
+    "rootDir": "src",
+    "outDir": "dist-electron",
+    "types": [
+      "node",
+      "electron"
+    ]
+  },
+  "include": [
+    "src/app/**/*.ts",
+    "src/shared/**/*.ts"
+  ],
+  "exclude": [
+    "src/**/*.test.ts",
+    "src/shared/browser-store.ts",
+    "src/shared/electron-store.ts",
+    "src/shared/sync-service.ts"
+  ]
+}

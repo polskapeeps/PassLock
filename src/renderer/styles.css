@@ -1,0 +1,369 @@
+:root {
+  color-scheme: dark;
+  --bg: radial-gradient(circle at top left, rgba(49, 104, 177, 0.4), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(22, 197, 160, 0.25), transparent 22%),
+    linear-gradient(160deg, #07111d 0%, #091825 38%, #04070d 100%);
+  --surface: rgba(12, 21, 34, 0.82);
+  --surface-strong: rgba(9, 16, 27, 0.96);
+  --surface-soft: rgba(255, 255, 255, 0.04);
+  --line: rgba(154, 171, 196, 0.18);
+  --line-strong: rgba(154, 171, 196, 0.34);
+  --text: #f3f8fd;
+  --muted: rgba(210, 223, 240, 0.74);
+  --accent: #67e8f9;
+  --accent-strong: #2dd4bf;
+  --shadow: 0 24px 80px rgba(3, 10, 18, 0.45);
+  --font-sans: "Aptos", "Segoe UI", "Trebuchet MS", "Gill Sans", sans-serif;
+  --font-mono: "Cascadia Code", "Consolas", "SFMono-Regular", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+.is-electron .hero {
+  -webkit-app-region: drag;
+}
+
+.is-electron button,
+.is-electron input,
+.is-electron textarea {
+  -webkit-app-region: no-drag;
+}
+
+.app-shell {
+  width: min(1360px, calc(100vw - 24px));
+  margin: 0 auto;
+  padding: 24px 0 40px;
+}
+
+.hero,
+.panel,
+.notice {
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) auto;
+  gap: 24px;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(6, 14, 24, 0.78), rgba(14, 25, 40, 0.86));
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  padding: 28px;
+}
+
+.hero__eyebrow,
+.panel__eyebrow {
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+.hero h1,
+.panel h2 {
+  margin: 8px 0 10px;
+  line-height: 1.05;
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 3vw, 3.2rem);
+  max-width: 14ch;
+}
+
+.hero p,
+.panel p,
+.subtle,
+.empty-state {
+  color: var(--muted);
+}
+
+.hero__actions,
+.inline-actions,
+.vault-item__actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-radius: 18px;
+  margin: 18px 0;
+  padding: 14px 18px;
+  border: 1px solid var(--line-strong);
+}
+
+.notice--error {
+  background: rgba(127, 29, 29, 0.52);
+}
+
+.notice--success {
+  background: rgba(20, 83, 45, 0.48);
+}
+
+.notice--info {
+  background: rgba(8, 47, 73, 0.58);
+}
+
+.notice__dismiss {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 22px;
+  grid-column: span 4;
+}
+
+.panel--wide {
+  grid-column: span 8;
+}
+
+.panel--center {
+  max-width: 520px;
+  margin: 28px auto 0;
+}
+
+.panel__header {
+  margin-bottom: 16px;
+}
+
+.panel__header--split {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field input,
+.field textarea {
+  background: var(--surface-strong);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 13px 14px;
+}
+
+.field input:focus,
+.field textarea:focus {
+  outline: 2px solid rgba(103, 232, 249, 0.4);
+  border-color: transparent;
+}
+
+.field small {
+  color: var(--muted);
+}
+
+.button {
+  border: 1px solid transparent;
+  border-radius: 14px;
+  cursor: pointer;
+  padding: 12px 16px;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.button--primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: #052033;
+  font-weight: 700;
+}
+
+.button--secondary {
+  background: rgba(103, 232, 249, 0.15);
+  color: var(--accent);
+  border-color: rgba(103, 232, 249, 0.24);
+}
+
+.button--ghost {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border-color: var(--line);
+}
+
+.output-card {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.output-card code {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 1.02rem;
+  line-height: 1.6;
+  word-break: break-all;
+  padding-bottom: 8px;
+}
+
+.meter {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  height: 10px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.meter__bar {
+  height: 100%;
+  background: linear-gradient(90deg, #f97316 0%, #fbbf24 35%, #4ade80 72%, #67e8f9 100%);
+}
+
+.meter__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.field--wide {
+  grid-column: 1 / -1;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
+.vault-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.vault-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+
+.vault-item h3,
+.vault-item p,
+.vault-item small {
+  margin: 0;
+}
+
+.sync-card,
+.empty-state {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed var(--line);
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+@media (max-width: 1180px) {
+  .panel,
+  .panel--wide {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 820px) {
+  .app-shell {
+    width: min(100vw - 16px, 100%);
+    padding-top: 16px;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .panel,
+  .panel--wide {
+    grid-column: 1 / -1;
+  }
+
+  .options-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vault-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
