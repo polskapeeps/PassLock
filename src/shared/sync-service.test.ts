@@ -183,8 +183,86 @@ describe("SupabaseSyncService", () => {
 
     const result = await service.syncNow();
 
-    expect(pushProfile).toHaveBeenCalledTimes(2);
+    expect(pushProfile).toHaveBeenCalledTimes(1);
     expect(result.uploaded).toBe(0);
     expect(repository.mutations[0]?.syncedAt).not.toBeNull();
+  });
+
+  it("compacts multiple unsynced writes for the same entry before upload", async () => {
+    const repository = new SyncRepositoryStub();
+    repository.mutations = [
+      {
+        id: "mutation_1",
+        kind: "upsert",
+        recordId: "entry_1",
+        payload: JSON.stringify({
+          id: "entry_1",
+          envelope: {
+            version: 1,
+            algorithm: "xchacha20poly1305-ietf",
+            nonce: "nonce_old",
+            cipherText: "cipher_old",
+            context: "passlock:entry:entry_1",
+          },
+          createdAt: "2026-04-07T00:00:00.000Z",
+          updatedAt: "2026-04-07T00:00:00.000Z",
+          deletedAt: null,
+        }),
+        createdAt: "2026-04-07T00:00:00.000Z",
+        updatedAt: "2026-04-07T00:00:00.000Z",
+        syncedAt: null,
+      },
+      {
+        id: "mutation_2",
+        kind: "upsert",
+        recordId: "entry_1",
+        payload: JSON.stringify({
+          id: "entry_1",
+          envelope: {
+            version: 1,
+            algorithm: "xchacha20poly1305-ietf",
+            nonce: "nonce_new",
+            cipherText: "cipher_new",
+            context: "passlock:entry:entry_1",
+          },
+          createdAt: "2026-04-07T00:00:00.000Z",
+          updatedAt: "2026-04-07T01:00:00.000Z",
+          deletedAt: null,
+        }),
+        createdAt: "2026-04-07T01:00:00.000Z",
+        updatedAt: "2026-04-07T01:00:00.000Z",
+        syncedAt: null,
+      },
+    ];
+
+    const service = new SupabaseSyncService(repository) as unknown as {
+      client: object | null;
+      pushProfile: (client: object, session: { user: { id: string } }, snapshot: RepositorySnapshot) => Promise<void>;
+      pushEntry: (client: object, session: { user: { id: string } }, record: StoredVaultEntryRecord, deviceId: string) => Promise<void>;
+      pullEntries: () => Promise<unknown[]>;
+      pullDeletes: () => Promise<unknown[]>;
+      requireClient: () => object;
+      requireSession: () => Promise<{ user: { id: string } }>;
+      syncNow: () => Promise<{ uploaded: number; downloaded: number; deleted: number; lastSyncedAt: string | null }>;
+    };
+
+    const pushEntry = vi.fn(async () => {});
+    service.client = {};
+    service.pushProfile = vi.fn(async () => {});
+    service.pushEntry = pushEntry;
+    service.pullEntries = vi.fn(async () => []);
+    service.pullDeletes = vi.fn(async () => []);
+    service.requireClient = vi.fn(() => ({}));
+    service.requireSession = vi.fn(async () => ({ user: { id: "user_1" } }));
+
+    const result = await service.syncNow();
+
+    expect(pushEntry).toHaveBeenCalledTimes(1);
+    expect(pushEntry.mock.calls[0]?.[2]).toMatchObject({
+      id: "entry_1",
+      updatedAt: "2026-04-07T01:00:00.000Z",
+    });
+    expect(result.uploaded).toBe(1);
+    expect(repository.mutations.every((mutation) => mutation.syncedAt !== null)).toBe(true);
   });
 });

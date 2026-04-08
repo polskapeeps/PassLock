@@ -5,6 +5,7 @@ import type {
   RepositorySnapshot,
   StoredVaultEntryRecord,
   SyncFlushResult,
+  VaultMutation,
   VaultRepository,
 } from "./types";
 
@@ -81,15 +82,20 @@ export class SupabaseSyncService {
     const session = await this.requireSession();
     const snapshot = await this.repository.getSnapshot();
     const pendingMutations = await this.repository.listMutations();
+    const compactedMutations = this.compactMutations(pendingMutations);
 
-    if (snapshot.profile) {
+    if (
+      snapshot.profile &&
+      (snapshot.sync.lastSyncedAt === null ||
+        compactedMutations.some((mutation) => mutation.kind === "profile" || mutation.kind === "settings"))
+    ) {
       await this.pushProfile(client, session, snapshot);
     }
 
     let uploaded = 0;
     let deleted = 0;
 
-    for (const mutation of pendingMutations) {
+    for (const mutation of compactedMutations) {
       if (mutation.kind === "upsert") {
         const record = JSON.parse(mutation.payload) as StoredVaultEntryRecord;
         await this.pushEntry(client, session, record, snapshot.sync.deviceId);
@@ -100,10 +106,6 @@ export class SupabaseSyncService {
         const payload = JSON.parse(mutation.payload) as { id: string; deletedAt: string };
         await this.pushDelete(client, session, payload.id, payload.deletedAt, snapshot.sync.deviceId);
         deleted += 1;
-      }
-
-      if ((mutation.kind === "profile" || mutation.kind === "settings") && snapshot.profile) {
-        await this.pushProfile(client, session, snapshot);
       }
     }
 
@@ -255,6 +257,30 @@ export class SupabaseSyncService {
     });
 
     return [...entryMap.values()].sort((left, right) => right.updatedAt.localeCompare(left.updatedAt));
+  }
+
+  private compactMutations(mutations: VaultMutation[]) {
+    let profileMutation: VaultMutation | null = null;
+    let settingsMutation: VaultMutation | null = null;
+    const entryMutations = new Map<string, VaultMutation>();
+
+    for (const mutation of mutations) {
+      if (mutation.kind === "profile") {
+        profileMutation = mutation;
+        continue;
+      }
+
+      if (mutation.kind === "settings") {
+        settingsMutation = mutation;
+        continue;
+      }
+
+      entryMutations.set(mutation.recordId, mutation);
+    }
+
+    return [profileMutation, settingsMutation, ...entryMutations.values()]
+      .filter((mutation): mutation is VaultMutation => Boolean(mutation))
+      .sort((left, right) => left.createdAt.localeCompare(right.createdAt));
   }
 
   private requireClient() {
