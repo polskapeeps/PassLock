@@ -311,10 +311,66 @@ textarea {
   border-radius: 18px;
 }
 
+.vault-item--selected {
+  border-color: rgba(103, 232, 249, 0.5);
+  background: rgba(103, 232, 249, 0.08);
+}
+
+.vault-item[role="button"] {
+  cursor: pointer;
+}
+
+.vault-item:focus-visible {
+  outline: 2px solid rgba(103, 232, 249, 0.45);
+  outline-offset: 2px;
+}
+
 .vault-item h3,
 .vault-item p,
 .vault-item small {
   margin: 0;
+}
+
+.vault-detail {
+  margin-bottom: 16px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.vault-detail__header,
+.vault-detail__grid {
+  display: grid;
+  gap: 14px;
+}
+
+.vault-detail__header {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  margin-bottom: 16px;
+}
+
+.vault-detail__header h3,
+.vault-detail__notes p,
+.vault-detail__field p {
+  margin: 6px 0 0;
+}
+
+.vault-detail__grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.vault-detail__field,
+.vault-detail__notes {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.vault-detail__notes {
+  margin-top: 14px;
 }
 
 .sync-card,
@@ -365,5 +421,10 @@ textarea {
   .vault-item {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .vault-detail__header,
+  .vault-detail__grid {
+    grid-template-columns: 1fr;
   }
 }

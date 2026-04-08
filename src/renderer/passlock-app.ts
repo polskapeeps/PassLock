@@ -30,6 +30,7 @@ type AppState = {
   session: VaultSession | null;
   auth: AuthState;
   entries: VaultEntry[];
+  selectedEntryId: string | null;
   search: string;
   generatorOptions: GeneratorOptions;
   generatedPassword: string;
@@ -61,6 +62,7 @@ export class PassLockApp {
     session: null,
     auth: { isConfigured: false, isAuthenticated: false, email: null },
     entries: [],
+    selectedEntryId: null,
     search: "",
     generatorOptions: DEFAULT_GENERATOR_OPTIONS,
     generatedPassword: "",
@@ -131,6 +133,23 @@ export class PassLockApp {
         this.handleInput(target);
       }
     });
+
+    this.root.addEventListener("keydown", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) {
+        return;
+      }
+
+      const actionTarget = target.closest<HTMLElement>("[data-action='select-entry']");
+      if (!actionTarget) {
+        return;
+      }
+
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        void this.handleAction("select-entry", actionTarget);
+      }
+    });
   }
 
   private async refreshState(noticeMessage?: string) {
@@ -141,12 +160,15 @@ export class PassLockApp {
 
     const entries =
       session.isUnlocked ? await this.vaultService.listEntries(this.state.search) : [];
+    const selectedEntry = entries.find((entry) => entry.id === this.state.selectedEntryId) ?? null;
 
     this.state = {
       ...this.state,
       session,
       auth,
       entries,
+      selectedEntryId: selectedEntry?.id ?? null,
+      draft: selectedEntry ? this.createDraftFromEntry(selectedEntry) : this.state.draft,
       notice: noticeMessage ? { tone: "success", message: noticeMessage } : this.state.notice,
     };
     this.render();
@@ -175,11 +197,9 @@ export class PassLockApp {
       }
 
       if (formId === "entry-form") {
-        await this.vaultService.saveEntry(this.state.draft);
-        this.state.draft = {
-          ...EMPTY_DRAFT,
-          password: this.state.generatedPassword || "",
-        };
+        const entry = await this.vaultService.saveEntry(this.state.draft);
+        this.state.selectedEntryId = entry.id;
+        this.state.draft = this.createDraftFromEntry(entry);
         await this.refreshState("Vault entry saved.");
       }
 
@@ -224,12 +244,7 @@ export class PassLockApp {
           break;
         }
         case "copy-entry-password": {
-          const entryId = target.dataset.entryId ?? "";
-          const entry = this.state.entries.find((item) => item.id === entryId);
-          if (!entry) {
-            throw new Error("Vault entry not found.");
-          }
-
+          const entry = this.requireEntry(target.dataset.entryId ?? "");
           await this.copySecret(entry.password);
           this.state.notice = {
             tone: "success",
@@ -237,26 +252,45 @@ export class PassLockApp {
           };
           break;
         }
-        case "edit-entry": {
-          const entryId = target.dataset.entryId ?? "";
-          const entry = this.state.entries.find((item) => item.id === entryId);
-          if (!entry) {
-            throw new Error("Vault entry not found.");
+        case "copy-entry-username": {
+          const entry = this.requireEntry(target.dataset.entryId ?? "");
+          if (!entry.username) {
+            throw new Error("This entry does not have a username yet.");
           }
 
-          this.state.draft = {
-            id: entry.id,
-            title: entry.title,
-            username: entry.username,
-            password: entry.password,
-            url: entry.url,
-            notes: entry.notes,
-            tags: [...entry.tags],
+          await this.copySecret(entry.username);
+          this.state.notice = {
+            tone: "success",
+            message: `Copied username for ${entry.title}.`,
           };
-          this.state.notice = { tone: "info", message: `Editing ${entry.title}.` };
+          break;
+        }
+        case "copy-entry-url": {
+          const entry = this.requireEntry(target.dataset.entryId ?? "");
+          if (!entry.url) {
+            throw new Error("This entry does not have a website or app yet.");
+          }
+
+          await this.copySecret(entry.url);
+          this.state.notice = {
+            tone: "success",
+            message: `Copied website or app for ${entry.title}.`,
+          };
+          break;
+        }
+        case "select-entry":
+        case "edit-entry": {
+          const entry = this.requireEntry(target.dataset.entryId ?? "");
+          this.state.selectedEntryId = entry.id;
+          this.state.draft = this.createDraftFromEntry(entry);
+          this.state.notice = { tone: "info", message: `Loaded ${entry.title} for editing.` };
           break;
         }
         case "delete-entry": {
+          if ((target.dataset.entryId ?? "") === this.state.selectedEntryId) {
+            this.state.selectedEntryId = null;
+            this.state.draft = { ...EMPTY_DRAFT, password: this.state.generatedPassword || "" };
+          }
           await this.vaultService.deleteEntry(target.dataset.entryId ?? "");
           await this.refreshState("Vault entry deleted.");
           return;
@@ -267,8 +301,9 @@ export class PassLockApp {
           return;
         }
         case "new-entry": {
+          this.state.selectedEntryId = null;
           this.state.draft = { ...EMPTY_DRAFT, password: this.state.generatedPassword || "" };
-          this.state.notice = null;
+          this.state.notice = { tone: "info", message: "Creating a new vault entry." };
           break;
         }
         case "export-vault": {
@@ -331,7 +366,12 @@ export class PassLockApp {
       this.state.search = target.value;
       if (this.state.session?.isUnlocked) {
         void this.vaultService.listEntries(target.value).then((entries) => {
+          const selectedEntry = entries.find((entry) => entry.id === this.state.selectedEntryId) ?? null;
           this.state.entries = entries;
+          this.state.selectedEntryId = selectedEntry?.id ?? null;
+          if (selectedEntry) {
+            this.state.draft = this.createDraftFromEntry(selectedEntry);
+          }
           this.render();
         });
       }
@@ -453,6 +493,10 @@ export class PassLockApp {
     const session = this.state.session;
     const settings = session?.settings;
     const strengthPercent = this.state.generatedStrength.score;
+    const selectedEntry =
+      session?.isUnlocked
+        ? this.state.entries.find((entry) => entry.id === this.state.selectedEntryId) ?? null
+        : null;
 
     this.root.innerHTML = `
       <div class="app-shell ${window.passlock?.app.isElectron() ? "is-electron" : ""}">
@@ -488,8 +532,8 @@ export class PassLockApp {
                   <section class="grid">
                     ${this.renderGeneratorPanel(strengthPercent)}
                     ${this.renderSyncPanel()}
-                    ${this.renderEntryEditor()}
-                    ${this.renderVaultPanel()}
+                    ${this.renderEntryEditor(selectedEntry)}
+                    ${this.renderVaultPanel(selectedEntry)}
                     ${this.renderSettingsPanel(settings)}
                   </section>
                 `
@@ -582,7 +626,7 @@ export class PassLockApp {
     `;
   }
 
-  private renderVaultPanel() {
+  private renderVaultPanel(selectedEntry: VaultEntry | null) {
     return `
       <section class="panel panel--wide">
         <div class="panel__header panel__header--split">
@@ -600,6 +644,44 @@ export class PassLockApp {
           <input type="search" name="search" value="${escapeAttribute(this.state.search)}" placeholder="Search titles, usernames, notes, or tags" />
         </label>
         <input id="import-file" type="file" accept="application/json" class="sr-only" />
+        ${
+          selectedEntry
+            ? `
+              <section class="vault-detail">
+                <div class="vault-detail__header">
+                  <div>
+                    <span class="panel__eyebrow">Selected entry</span>
+                    <h3>${escapeHtml(selectedEntry.title)}</h3>
+                    <p>Loaded in the editor below for quick updates.</p>
+                  </div>
+                  <div class="inline-actions">
+                    ${
+                      selectedEntry.username
+                        ? `<button class="button button--ghost" data-action="copy-entry-username" data-entry-id="${selectedEntry.id}">Copy Username</button>`
+                        : ``
+                    }
+                    <button class="button button--secondary" data-action="copy-entry-password" data-entry-id="${selectedEntry.id}">Copy Password</button>
+                    ${
+                      selectedEntry.url
+                        ? `<button class="button button--ghost" data-action="copy-entry-url" data-entry-id="${selectedEntry.id}">Copy Website</button>`
+                        : ``
+                    }
+                  </div>
+                </div>
+                <div class="vault-detail__grid">
+                  ${this.renderDetailField("Username", selectedEntry.username || "Not set")}
+                  ${this.renderDetailField("Website or app", selectedEntry.url || "Not set")}
+                  ${this.renderDetailField("Tags", selectedEntry.tags.join(", ") || "No tags")}
+                  ${this.renderDetailField("Last updated", formatRelative(selectedEntry.updatedAt))}
+                </div>
+                <div class="vault-detail__notes">
+                  <span class="panel__eyebrow">Notes</span>
+                  <p>${escapeHtml(selectedEntry.notes || "No notes yet.")}</p>
+                </div>
+              </section>
+            `
+            : `<div class="empty-state">Click any saved entry to load all details, edit it in place, and copy each field individually.</div>`
+        }
         <div class="vault-list">
           ${
             this.state.entries.length === 0
@@ -607,15 +689,14 @@ export class PassLockApp {
               : this.state.entries
                   .map(
                     (entry) => `
-                      <article class="vault-item">
+                      <article class="vault-item ${entry.id === this.state.selectedEntryId ? "vault-item--selected" : ""}" data-action="select-entry" data-entry-id="${entry.id}" tabindex="0" role="button" aria-pressed="${entry.id === this.state.selectedEntryId}">
                         <div class="vault-item__copy">
                           <h3>${escapeHtml(entry.title)}</h3>
                           <p>${escapeHtml(entry.username || "No username")}</p>
-                          <small>${escapeHtml(entry.url || "No URL")} &bull; Updated ${formatRelative(entry.updatedAt)}</small>
+                          <small>${escapeHtml(entry.url || "No website or app")} &bull; Updated ${formatRelative(entry.updatedAt)}</small>
                         </div>
                         <div class="vault-item__actions">
-                          <button class="button button--secondary" data-action="copy-entry-password" data-entry-id="${entry.id}">Copy</button>
-                          <button class="button button--ghost" data-action="edit-entry" data-entry-id="${entry.id}">Edit</button>
+                          <button class="button button--secondary" data-action="copy-entry-password" data-entry-id="${entry.id}">Copy Password</button>
                           <button class="button button--ghost" data-action="delete-entry" data-entry-id="${entry.id}">Delete</button>
                         </div>
                       </article>
@@ -628,14 +709,15 @@ export class PassLockApp {
     `;
   }
 
-  private renderEntryEditor() {
+  private renderEntryEditor(selectedEntry: VaultEntry | null) {
     const isEditing = Boolean(this.state.draft.id);
     return `
       <section class="panel">
         <div class="panel__header panel__header--split">
           <div>
             <span class="panel__eyebrow">Entry editor</span>
-            <h2>${isEditing ? "Edit vault entry" : "Save to vault"}</h2>
+            <h2>${isEditing ? "View and edit entry" : "Save to vault"}</h2>
+            <p>${escapeHtml(selectedEntry ? `Now editing ${selectedEntry.title}. Changes save directly back to this vault item.` : "Select an entry from the vault list or create a new one.")}</p>
           </div>
           <button class="button button--ghost" data-action="new-entry">New Entry</button>
         </div>
@@ -643,7 +725,7 @@ export class PassLockApp {
           <label class="field"><span>Title</span><input type="text" name="title" value="${escapeAttribute(this.state.draft.title)}" placeholder="GitHub, bank, email, router..." required /></label>
           <label class="field"><span>Username</span><input type="text" name="username" value="${escapeAttribute(this.state.draft.username)}" placeholder="email or login" /></label>
           <label class="field"><span>Password</span><input type="text" name="password" value="${escapeAttribute(this.state.draft.password)}" required /></label>
-          <label class="field"><span>URL</span><input type="url" name="url" value="${escapeAttribute(this.state.draft.url)}" placeholder="https://example.com" /></label>
+          <label class="field"><span>Website or app</span><input type="text" name="url" value="${escapeAttribute(this.state.draft.url)}" placeholder="google.com, mail, router.local, Steam..." /></label>
           <label class="field"><span>Tags</span><input type="text" name="tags" value="${escapeAttribute(this.state.draft.tags.join(", "))}" placeholder="personal, finance, work" /></label>
           <label class="field"><span>Notes</span><textarea name="notes" rows="4" placeholder="Anything you want to remember about this credential...">${escapeHtml(this.state.draft.notes)}</textarea></label>
           <button class="button button--primary" type="submit">${this.state.saving ? "Saving..." : isEditing ? "Update Entry" : "Save Entry"}</button>
@@ -715,6 +797,36 @@ export class PassLockApp {
         <span>${escapeHtml(label)}</span>
       </label>
     `;
+  }
+
+  private renderDetailField(label: string, value: string) {
+    return `
+      <div class="vault-detail__field">
+        <span class="panel__eyebrow">${escapeHtml(label)}</span>
+        <p>${escapeHtml(value)}</p>
+      </div>
+    `;
+  }
+
+  private createDraftFromEntry(entry: VaultEntry): VaultEntryDraft {
+    return {
+      id: entry.id,
+      title: entry.title,
+      username: entry.username,
+      password: entry.password,
+      url: entry.url,
+      notes: entry.notes,
+      tags: [...entry.tags],
+    };
+  }
+
+  private requireEntry(entryId: string) {
+    const entry = this.state.entries.find((item) => item.id === entryId);
+    if (!entry) {
+      throw new Error("Vault entry not found.");
+    }
+
+    return entry;
   }
 }
 
