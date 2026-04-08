@@ -2,14 +2,14 @@
   "name": "passlock",
   "version": "2.0.0",
   "description": "Local-first password manager with secure generation, encrypted vault storage, desktop tray support, and optional Supabase sync.",
-  "main": "dist-electron/main.js",
+  "main": "dist-electron/app/main.js",
   "scripts": {
     "dev": "concurrently -k \"npm:dev:renderer\" \"npm:dev:electron\" \"npm:dev:desktop\"",
     "dev:renderer": "vite",
     "dev:electron": "tsc -p tsconfig.node.json --watch --preserveWatchOutput",
-    "dev:desktop": "wait-on tcp:5173 dist-electron/main.js && cross-env VITE_DEV_SERVER_URL=http://127.0.0.1:5173 electron .",
+    "dev:desktop": "wait-on tcp:5173 dist-electron/app/main.js && cross-env VITE_DEV_SERVER_URL=http://127.0.0.1:5173 node scripts/launch-electron.cjs",
     "build": "vite build && tsc -p tsconfig.node.json",
-    "start": "npm run build && electron .",
+    "start": "npm run build && node scripts/launch-electron.cjs",
     "test": "vitest run --coverage",
     "test:watch": "vitest",
     "dist": "npm run build && electron-builder",
@@ -30,7 +30,7 @@
       "output": "release"
     },
     "extraMetadata": {
-      "main": "dist-electron/main.js"
+      "main": "dist-electron/app/main.js"
     },
     "win": {
       "icon": "build/icon.ico",
