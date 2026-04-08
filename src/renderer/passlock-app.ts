@@ -500,17 +500,7 @@ export class PassLockApp {
 
     this.root.innerHTML = `
       <div class="app-shell ${window.passlock?.app.isElectron() ? "is-electron" : ""}">
-        <header class="hero">
-          <div class="hero__copy">
-            <span class="hero__eyebrow">PassLock 2.0</span>
-            <h1>Local-first password management with secure generation and optional sync.</h1>
-            <p>Modern by default, encrypted at rest, tray-friendly on desktop, and installable as a PWA.</p>
-          </div>
-          <div class="hero__actions">
-            ${session?.isUnlocked ? `<button class="button button--ghost" data-action="lock-vault">Lock Vault</button>` : ``}
-            <button class="button button--primary" data-action="generate-password">Generate</button>
-          </div>
-        </header>
+        ${session?.isUnlocked ? this.renderToolbar(settings) : this.renderHero()}
 
         ${
           this.state.notice
@@ -531,14 +521,55 @@ export class PassLockApp {
                 : `
                   <section class="grid">
                     ${this.renderGeneratorPanel(strengthPercent)}
-                    ${this.renderSyncPanel()}
+                    ${this.renderVaultPanel()}
                     ${this.renderEntryEditor(selectedEntry)}
-                    ${this.renderVaultPanel(selectedEntry)}
-                    ${this.renderSettingsPanel(settings)}
                   </section>
                 `
         }
       </div>
+    `;
+  }
+
+  private renderHero() {
+    return `
+      <header class="hero">
+        <div class="hero__copy">
+          <span class="hero__eyebrow">PassLock 2.0</span>
+          <h1>Local-first password management with secure generation and optional sync.</h1>
+          <p>Modern by default, encrypted at rest, tray-friendly on desktop, and installable as a PWA.</p>
+        </div>
+        <div class="hero__actions">
+          <button class="button button--primary" data-action="generate-password">Generate</button>
+        </div>
+      </header>
+    `;
+  }
+
+  private renderToolbar(settings?: VaultSession["settings"]) {
+    const syncStatus = !this.state.auth.isConfigured
+      ? "Sync not configured"
+      : this.state.auth.isAuthenticated
+        ? `Signed in as ${this.state.auth.email ?? "unknown user"}`
+        : "Cloud sync available";
+
+    return `
+      <header class="toolbar">
+        <section class="toolbar__brand">
+          <span class="hero__eyebrow">PassLock 2.0</span>
+          <h1>PassLock</h1>
+          <p>${this.state.entries.length} vault ${this.state.entries.length === 1 ? "entry" : "entries"} ready. ${escapeHtml(syncStatus)}</p>
+        </section>
+        ${this.renderSyncPanel()}
+        ${this.renderSettingsPanel(settings)}
+        <section class="toolbar__section toolbar__section--actions">
+          <span class="panel__eyebrow">Quick actions</span>
+          <div class="toolbar__actions">
+            <button class="button button--ghost" data-action="lock-vault">Lock Vault</button>
+            <button class="button button--ghost" data-action="new-entry">New Entry</button>
+            <button class="button button--primary" data-action="generate-password">Generate</button>
+          </div>
+        </section>
+      </header>
     `;
   }
 
@@ -626,9 +657,9 @@ export class PassLockApp {
     `;
   }
 
-  private renderVaultPanel(selectedEntry: VaultEntry | null) {
+  private renderVaultPanel() {
     return `
-      <section class="panel panel--wide">
+      <section class="panel">
         <div class="panel__header panel__header--split">
           <div>
             <span class="panel__eyebrow">Vault</span>
@@ -644,44 +675,6 @@ export class PassLockApp {
           <input type="search" name="search" value="${escapeAttribute(this.state.search)}" placeholder="Search titles, usernames, notes, or tags" />
         </label>
         <input id="import-file" type="file" accept="application/json" class="sr-only" />
-        ${
-          selectedEntry
-            ? `
-              <section class="vault-detail">
-                <div class="vault-detail__header">
-                  <div>
-                    <span class="panel__eyebrow">Selected entry</span>
-                    <h3>${escapeHtml(selectedEntry.title)}</h3>
-                    <p>Loaded in the editor below for quick updates.</p>
-                  </div>
-                  <div class="inline-actions">
-                    ${
-                      selectedEntry.username
-                        ? `<button class="button button--ghost" data-action="copy-entry-username" data-entry-id="${selectedEntry.id}">Copy Username</button>`
-                        : ``
-                    }
-                    <button class="button button--secondary" data-action="copy-entry-password" data-entry-id="${selectedEntry.id}">Copy Password</button>
-                    ${
-                      selectedEntry.url
-                        ? `<button class="button button--ghost" data-action="copy-entry-url" data-entry-id="${selectedEntry.id}">Copy Website</button>`
-                        : ``
-                    }
-                  </div>
-                </div>
-                <div class="vault-detail__grid">
-                  ${this.renderDetailField("Username", selectedEntry.username || "Not set")}
-                  ${this.renderDetailField("Website or app", selectedEntry.url || "Not set")}
-                  ${this.renderDetailField("Tags", selectedEntry.tags.join(", ") || "No tags")}
-                  ${this.renderDetailField("Last updated", formatRelative(selectedEntry.updatedAt))}
-                </div>
-                <div class="vault-detail__notes">
-                  <span class="panel__eyebrow">Notes</span>
-                  <p>${escapeHtml(selectedEntry.notes || "No notes yet.")}</p>
-                </div>
-              </section>
-            `
-            : `<div class="empty-state">Click any saved entry to load all details, edit it in place, and copy each field individually.</div>`
-        }
         <div class="vault-list">
           ${
             this.state.entries.length === 0
@@ -719,7 +712,24 @@ export class PassLockApp {
             <h2>${isEditing ? "View and edit entry" : "Save to vault"}</h2>
             <p>${escapeHtml(selectedEntry ? `Now editing ${selectedEntry.title}. Changes save directly back to this vault item.` : "Select an entry from the vault list or create a new one.")}</p>
           </div>
-          <button class="button button--ghost" data-action="new-entry">New Entry</button>
+          <div class="inline-actions">
+            ${
+              selectedEntry?.username
+                ? `<button class="button button--ghost" data-action="copy-entry-username" data-entry-id="${selectedEntry.id}">Copy Username</button>`
+                : ``
+            }
+            ${
+              selectedEntry?.url
+                ? `<button class="button button--ghost" data-action="copy-entry-url" data-entry-id="${selectedEntry.id}">Copy Website</button>`
+                : ``
+            }
+            ${
+              selectedEntry
+                ? `<button class="button button--secondary" data-action="copy-entry-password" data-entry-id="${selectedEntry.id}">Copy Password</button>`
+                : ``
+            }
+            <button class="button button--ghost" data-action="new-entry">New Entry</button>
+          </div>
         </div>
         <form id="entry-form" class="stack">
           <label class="field"><span>Title</span><input type="text" name="title" value="${escapeAttribute(this.state.draft.title)}" placeholder="GitHub, bank, email, router..." required /></label>
@@ -736,11 +746,11 @@ export class PassLockApp {
 
   private renderSyncPanel() {
     return `
-      <section class="panel">
+      <section class="toolbar__section">
         <div class="panel__header">
           <span class="panel__eyebrow">Cloud sync</span>
-          <h2>Supabase access</h2>
-          <p>Sync uploads only encrypted vault records. The master password never leaves the device.</p>
+          <h3>Supabase access</h3>
+          <p>Encrypted sync only. Your master password stays local.</p>
         </div>
         ${
           !this.state.auth.isConfigured
@@ -772,10 +782,10 @@ export class PassLockApp {
 
   private renderSettingsPanel(settings?: VaultSession["settings"]) {
     return `
-      <section class="panel">
+      <section class="toolbar__section">
         <div class="panel__header">
-          <span class="panel__eyebrow">Settings</span>
-          <h2>Clipboard and desktop behavior</h2>
+          <span class="panel__eyebrow">Desktop</span>
+          <h3>Clipboard and tray</h3>
         </div>
         <div class="stack">
           <label class="field">
@@ -784,7 +794,6 @@ export class PassLockApp {
           </label>
           ${this.renderCheckbox("closeToTray", "Close window to tray", settings?.closeToTray ?? true)}
           ${this.renderCheckbox("launchHidden", "Launch hidden in tray", settings?.launchHidden ?? false)}
-          <p class="subtle">Desktop-only settings are ignored in the browser, but the encrypted vault format stays the same everywhere.</p>
         </div>
       </section>
     `;
@@ -796,15 +805,6 @@ export class PassLockApp {
         <input type="checkbox" name="${name}" ${checked ? "checked" : ""} />
         <span>${escapeHtml(label)}</span>
       </label>
-    `;
-  }
-
-  private renderDetailField(label: string, value: string) {
-    return `
-      <div class="vault-detail__field">
-        <span class="panel__eyebrow">${escapeHtml(label)}</span>
-        <p>${escapeHtml(value)}</p>
-      </div>
     `;
   }
 
