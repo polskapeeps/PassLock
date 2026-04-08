@@ -29,8 +29,7 @@ async function createWindow() {
     minWidth: 980,
     minHeight: 720,
     frame: false,
-    transparent: true,
-    backgroundColor: "#00000000",
+    backgroundColor: "#07111d",
     titleBarStyle: "hidden",
     show: !settings.launchHidden,
     webPreferences: {
