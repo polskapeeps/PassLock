@@ -354,6 +354,11 @@ export class PassLockApp {
 
     if (target instanceof HTMLInputElement && target.type === "range" && name === "length") {
       this.state.generatorOptions.length = Number(target.value);
+      const helper = target.parentElement?.querySelector("small");
+      if (helper) {
+        helper.textContent = `${this.state.generatorOptions.length} characters`;
+      }
+      return;
     }
 
     if (target instanceof HTMLInputElement && target.type === "checkbox") {
@@ -388,9 +393,9 @@ export class PassLockApp {
         .finally(() => {
           target.value = "";
         });
-    }
 
-    this.render();
+      return;
+    }
   }
 
   private async saveDesktopSettings(key: "closeToTray" | "launchHidden", value: boolean) {
